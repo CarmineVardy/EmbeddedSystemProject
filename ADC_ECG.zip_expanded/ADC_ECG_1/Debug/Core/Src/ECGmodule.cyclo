@@ -1,7 +1,0 @@
-../Core/Src/ECGmodule.c:13:19:read_ECG	3
-../Core/Src/ECGmodule.c:33:10:filter_signal	2
-../Core/Src/ECGmodule.c:49:19:filter_init	4
-../Core/Src/ECGmodule.c:69:10:find_max	4
-../Core/Src/ECGmodule.c:86:10:find_min	4
-../Core/Src/ECGmodule.c:103:19:find_peaks	7
-../Core/Src/ECGmodule.c:140:19:elab_ECG	3
