@@ -1,18 +1,21 @@
 @echo off
-REM Percorso relativo al file da eliminare
-set "RELATIVE_PATH=.metadata\.plugins\org.eclipse.core.resources\.projects\MidTermProject\.location"
+REM Vai alla directory dei progetti
+cd .metadata\.plugins\org.eclipse.core.resources\.projects
 
-REM Controlla se il file esiste
-if exist "%RELATIVE_PATH%" (
-    echo Il file %RELATIVE_PATH% esiste. Procedo con l'eliminazione.
-    del /f /q "%RELATIVE_PATH%"
-    if not exist "%RELATIVE_PATH%" (
-        echo File eliminato con successo.
+REM Scansiona tutte le sottodirectory per trovare i file .location
+for /d %%D in (*) do (
+    set "LOCATION_FILE=%%D\.location"
+    if exist "%%D\.location" (
+        echo Trovato: %%D\.location. Procedo con l'eliminazione.
+        del /f /q "%%D\.location"
+        if not exist "%%D\.location" (
+            echo File %%D\.location eliminato con successo.
+        ) else (
+            echo Errore: impossibile eliminare il file %%D\.location.
+        )
     ) else (
-        echo Errore: impossibile eliminare il file.
+        echo Nessun file .location trovato in %%D.
     )
-) else (
-    echo Il file %RELATIVE_PATH% non esiste.
 )
 
 pause
