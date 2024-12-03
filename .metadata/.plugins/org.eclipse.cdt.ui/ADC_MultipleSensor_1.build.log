@@ -1,0 +1,10 @@
+14:20:47 **** Incremental Build of configuration Debug for project ADC_MultipleSensor_1 ****
+make -j8 all 
+arm-none-eabi-size  ADC_MultipleSensor_1.elf 
+   text	   data	    bss	    dec	    hex	filename
+  14624	    112	   2048	  16784	   4190	ADC_MultipleSensor_1.elf
+Finished building: default.size.stdout
+ 
+
+14:20:48 Build Finished. 0 errors, 0 warnings. (took 259ms)
+
