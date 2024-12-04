@@ -1,0 +1,2 @@
+../Core/Src/read_channels.c:12:19:ADC_channel_user_config	40	static
+../Core/Src/read_channels.c:26:10:ADC_read_channel	32	static
