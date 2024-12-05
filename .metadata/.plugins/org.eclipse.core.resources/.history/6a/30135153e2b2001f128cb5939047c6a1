@@ -24,9 +24,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "stdio.h"
 #include "switch_channel.h"
-#include "read_temperature.h"
 
 /* USER CODE END Includes */
 
@@ -105,33 +103,14 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
-	/*
 	ch1_ECG     =  read_channel(&hadc1, ADC_CHANNEL_0, ADC_SAMPLETIME_3CYCLES);
 	ch2_fsens_1 =  read_channel(&hadc1, ADC_CHANNEL_1, ADC_SAMPLETIME_3CYCLES);
-	ch3_fsens_2 =  read_channel(&hadc1, ADC_CHANNEL_3, ADC_SAMPLETIME_3CYCLES);
-	ch4_temp    =  read_channel(&hadc1, ADC_CHANNEL_4, ADC_SAMPLETIME_3CYCLES);
-	*/
+	ch3_fsens_2 =  read_channel(&hadc1, ADC_CHANNEL_2, ADC_SAMPLETIME_3CYCLES);
+	ch4_temp    =  read_channel(&hadc1, ADC_CHANNEL_3, ADC_SAMPLETIME_3CYCLES);
 
-	if( channel_config(&hadc1, ADC_CHANNEL_0, ADC_SAMPLETIME_3CYCLES) != HAL_OK ){
-		Error_Handler();
-	}
-
-	if( channel_config(&hadc1, ADC_CHANNEL_1, ADC_SAMPLETIME_3CYCLES) != HAL_OK ){
-			Error_Handler();
-	}
-
-	if( channel_config(&hadc1, ADC_CHANNEL_3, ADC_SAMPLETIME_3CYCLES) != HAL_OK ){
-			Error_Handler();
-	}
-
-	if( channel_config(&hadc1, ADC_CHANNEL_4, ADC_SAMPLETIME_3CYCLES) != HAL_OK ){
-			Error_Handler();
-	}
-
+	printf("ch1:%u,ch2:%u\r\n", d_ch1, d_ch2);
 
 	HAL_Delay(10);
-
   }
   /* USER CODE END 3 */
 }
