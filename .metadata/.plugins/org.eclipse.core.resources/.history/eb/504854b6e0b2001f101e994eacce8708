@@ -91,25 +91,16 @@ int main(void)
   MX_ADC1_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-  uint16_t ch1_ECG, ch2_fsens_1,ch3_fsens_2,ch4_temp;
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	ch1_ECG     =  read_channel(&hadc1, ADC_CHANNEL_0, ADC_SAMPLETIME_3CYCLES);
-	ch2_fsens_1 =  read_channel(&hadc1, ADC_CHANNEL_1, ADC_SAMPLETIME_3CYCLES);
-	ch3_fsens_2 =  read_channel(&hadc1, ADC_CHANNEL_2, ADC_SAMPLETIME_3CYCLES);
-	ch4_temp    =  read_channel(&hadc1, ADC_CHANNEL_3, ADC_SAMPLETIME_3CYCLES);
-
-	printf("ch1:%u,ch2:%u\r\n", d_ch1, d_ch2);
-
-	HAL_Delay(10);
   }
   /* USER CODE END 3 */
 }

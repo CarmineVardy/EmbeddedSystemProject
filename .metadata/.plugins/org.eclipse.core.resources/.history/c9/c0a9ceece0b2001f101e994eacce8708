@@ -107,9 +107,9 @@ int main(void)
 	ch3_fsens_2 =  read_channel(&hadc1, ADC_CHANNEL_2, ADC_SAMPLETIME_3CYCLES);
 	ch4_temp    =  read_channel(&hadc1, ADC_CHANNEL_3, ADC_SAMPLETIME_3CYCLES);
 
-	printf("ch1:%u,ch2:%u\r\n", d_ch1, d_ch2);
+	  	printf("ch1:%u,ch2:%u\r\n", d_ch1, d_ch2);
 
-	HAL_Delay(10);
+	  	HAL_Delay(10);
   }
   /* USER CODE END 3 */
 }
