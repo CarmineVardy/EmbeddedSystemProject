@@ -93,8 +93,12 @@ int main(void)
   MX_GPIO_Init();
   MX_ADC1_Init();
   MX_USART2_UART_Init();
+
   /* USER CODE BEGIN 2 */
-  uint16_t ch1_ECG, ch2_fsens_1,ch3_fsens_2,ch4_temp;
+
+  uint32_t t1,t2;
+  uint16_t data_out;
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -106,31 +110,34 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-	/*
-	ch1_ECG     =  read_channel(&hadc1, ADC_CHANNEL_0, ADC_SAMPLETIME_3CYCLES);
-	ch2_fsens_1 =  read_channel(&hadc1, ADC_CHANNEL_1, ADC_SAMPLETIME_3CYCLES);
-	ch3_fsens_2 =  read_channel(&hadc1, ADC_CHANNEL_3, ADC_SAMPLETIME_3CYCLES);
-	ch4_temp    =  read_channel(&hadc1, ADC_CHANNEL_4, ADC_SAMPLETIME_3CYCLES);
-	*/
+	//t1 = HAL_GetTick();
 
-	if( channel_config(&hadc1, ADC_CHANNEL_0, ADC_SAMPLETIME_3CYCLES) != HAL_OK ){
+	if( read_channel(&data_out, &hadc1, ADC_CHANNEL_0, ADC_SAMPLETIME_3CYCLES) != HAL_OK ){
+		printf("\rRead ADC for Temperature error \r\n");
+	}else{
+		//Sensore di temperatura
+		float V, T;
+		read_temperature(&data_out, &V, &T)
+		printf("\r%u\t%.2f mV\t%.2f \xB0 C \n", data_out, V, T);
+	}
+
+
+	if( read_channel(&data_out, &hadc1, ADC_CHANNEL_1, ADC_SAMPLETIME_3CYCLES) != HAL_OK ){
 		Error_Handler();
 	}
 
-	if( channel_config(&hadc1, ADC_CHANNEL_1, ADC_SAMPLETIME_3CYCLES) != HAL_OK ){
-			Error_Handler();
+	if( read_channel(&data_out, &hadc1, ADC_CHANNEL_4, ADC_SAMPLETIME_3CYCLES) != HAL_OK ){
+		Error_Handler();
 	}
 
-	if( channel_config(&hadc1, ADC_CHANNEL_3, ADC_SAMPLETIME_3CYCLES) != HAL_OK ){
-			Error_Handler();
-	}
-
-	if( channel_config(&hadc1, ADC_CHANNEL_4, ADC_SAMPLETIME_3CYCLES) != HAL_OK ){
-			Error_Handler();
+	if( read_channel(&data_out, &hadc1, ADC_CHANNEL_5, ADC_SAMPLETIME_3CYCLES) != HAL_OK ){
+		Error_Handler();
 	}
 
 
-	HAL_Delay(10);
+	t2 = HAL_GetTick();
+
+	HAL_Delay(1000);
 
   }
   /* USER CODE END 3 */
@@ -183,6 +190,12 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+int _write(int file, char *ptr, int len)
+{
+	HAL_UART_Transmit(&huart2, (uint8_t *)ptr, len, HAL_MAX_DELAY);
+    return len;
+}
 
 /* USER CODE END 4 */
 

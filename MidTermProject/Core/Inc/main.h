@@ -22,6 +22,10 @@
 #ifndef __MAIN_H
 #define __MAIN_H
 
+//Costanti utili
+#define	VREF	3340
+#define	LEVELS	4096
+
 #ifdef __cplusplus
 extern "C" {
 #endif
