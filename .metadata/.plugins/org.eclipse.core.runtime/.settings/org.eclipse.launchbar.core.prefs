@@ -7,3 +7,4 @@ org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:ADC_ECG_1/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:ADC_ECG_1/activeLaunchTarget=null\:---
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:ADC_InternalTemp_1\ Debug/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:ADC_InternalTemp_1\ Debug/activeLaunchTarget=null\:---
+org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:MidTermProject\ Debug/activeLaunchMode=run

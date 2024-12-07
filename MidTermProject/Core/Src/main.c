@@ -102,7 +102,7 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
-  //uint32_t t1,t2;
+  uint32_t t1,t2;
   uint16_t data_out;
 
   int singleConvMode;
@@ -118,7 +118,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-	//t1 = HAL_GetTick();
+	t1 = HAL_GetTick();
 
 
 	singleConvMode = 1;
@@ -128,18 +128,20 @@ int main(void)
 		//Sensore di temperatura
 		float V, T;
 		read_temperature(&data_out, &V, &T);
-		printf("\r%u\t%.2f mV\t%.2f \xB0 C \n", data_out, V, T);
+		printf("\r data:%u\t, voltage:%.2f mV\t, temp:%.1f\xB0 C \n", data_out, V, T);
 	}
 
-	if(HAL_GPIO_ReadPin (GPIOC, GPIO_PIN_13)==1){
+	/*if(HAL_GPIO_ReadPin (GPIOC, GPIO_PIN_13)==1){
 		HAL_GPIO_WritePin (GPIOC, RED_LED_Pin, GPIO_PIN_SET);
 		HAL_GPIO_WritePin (GPIOB, YELLOW_LED_Pin, GPIO_PIN_SET);
 		HAL_GPIO_WritePin (GPIOA, GREEN_LED_Pin, GPIO_PIN_SET);
 	}else {
 		HAL_GPIO_WritePin (GPIOA, PUSH_BUTTON_Pin, GPIO_PIN_RESET);
-	}
+	}*/
 
-	//t2 = HAL_GetTick();
+	t2 = HAL_GetTick();
+
+	HAL_Delay(100-(t2-t1));
 
 	HAL_Delay(1000);
 
@@ -199,6 +201,41 @@ int _write(int file, char *ptr, int len)
 {
 	HAL_UART_Transmit(&huart2, (uint8_t *)ptr, len, HAL_MAX_DELAY);
     return len;
+}
+
+void set_led(int state) {
+    switch (state) {
+
+
+    		//  UTENTE FERMO ---> Accendi LED VERDE
+        case 1:
+        	  HAL_GPIO_WritePin(GPIOA, RED_LED_Pin, GPIO_PIN_RESET);
+			  HAL_GPIO_WritePin(GPIOA, YELLOW_LED_Pin, GPIO_PIN_RESET);
+			  HAL_GPIO_WritePin(GPIOA, GREEN_LED_Pin, GPIO_PIN_SET);
+            break;
+
+            // UTENTE CAMMINA ---> Accendi LED GIALLO
+        case 2:
+            HAL_GPIO_WritePin(GPIOA, RED_LED_Pin, GPIO_PIN_RESET);
+            HAL_GPIO_WritePin(GPIOA, YELLOW_LED_Pin, GPIO_PIN_SET);
+            HAL_GPIO_WritePin(GPIOA, GREEN_LED_Pin, GPIO_PIN_RESET);
+            break;
+
+
+            // UTENTE CORRE ---> Accendi LED ROSSO
+        case 3:
+        	   HAL_GPIO_WritePin(GPIOA, RED_LED_Pin, GPIO_PIN_SET);
+			   HAL_GPIO_WritePin(GPIOA, YELLOW_LED_Pin, GPIO_PIN_RESET);
+        	   HAL_GPIO_WritePin(GPIOA, GREEN_LED_Pin, GPIO_PIN_RESET);
+            break;
+
+            // Nessuno stato -->Spegni i LED
+        default:
+            HAL_GPIO_WritePin(GPIOA, RED_LED_Pin, GPIO_PIN_RESET);
+            HAL_GPIO_WritePin(GPIOA, YELLOW_LED_Pin, GPIO_PIN_RESET);
+            HAL_GPIO_WritePin(GPIOA, GREEN_LED_Pin, GPIO_PIN_RESET);
+            break;
+    }
 }
 
 /* USER CODE END 4 */
