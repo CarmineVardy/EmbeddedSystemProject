@@ -28,6 +28,12 @@
 #include "switch_channel.h"
 #include "read_temperature.h"
 
+
+#define BUTTON_TRESHOLD 1000
+uint8_t  prev_state=1;
+uint8_t  state;
+uint32_t cnt=0;
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -93,7 +99,6 @@ int main(void)
   MX_GPIO_Init();
   MX_ADC1_Init();
   MX_USART2_UART_Init();
-
   /* USER CODE BEGIN 2 */
 
   uint32_t t1,t2;
@@ -112,7 +117,7 @@ int main(void)
 
 	//t1 = HAL_GetTick();
 
-	if( read_channel(&data_out, &hadc1, ADC_CHANNEL_0, ADC_SAMPLETIME_3CYCLES) != HAL_OK ){
+	/*if( read_channel(&data_out, &hadc1, ADC_CHANNEL_0, ADC_SAMPLETIME_3CYCLES) != HAL_OK ){
 		printf("\rRead ADC for Temperature error \r\n");
 	}else{
 		//Sensore di temperatura
@@ -133,6 +138,27 @@ int main(void)
 	if( read_channel(&data_out, &hadc1, ADC_CHANNEL_5, ADC_SAMPLETIME_3CYCLES) != HAL_OK ){
 		Error_Handler();
 	}
+*/
+
+
+			    if(HAL_GPIO_ReadPin (GPIOC, GPIO_PIN_13)==1){
+
+
+				   HAL_GPIO_WritePin (GPIOC, RED_LED_Pin, GPIO_PIN_SET);
+				   HAL_GPIO_WritePin (GPIOB, YELLOW_LED_Pin, GPIO_PIN_SET);
+				   HAL_GPIO_WritePin (GPIOA, GREEN_LED_Pin, GPIO_PIN_SET);
+
+
+
+			  }else {
+
+			 	  HAL_GPIO_WritePin (GPIOA, PUSH_BUTTON_Pin, GPIO_PIN_RESET);
+
+			  }
+
+
+
+
 
 
 	t2 = HAL_GetTick();

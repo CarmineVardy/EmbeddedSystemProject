@@ -22,10 +22,6 @@
 #ifndef __MAIN_H
 #define __MAIN_H
 
-//Costanti utili
-#define	VREF	3340
-#define	LEVELS	4096
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -61,6 +57,14 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define GREEN_LED_Pin GPIO_PIN_7
+#define GREEN_LED_GPIO_Port GPIOA
+#define RED_LED_Pin GPIO_PIN_7
+#define RED_LED_GPIO_Port GPIOC
+#define PUSH_BUTTON_Pin GPIO_PIN_8
+#define PUSH_BUTTON_GPIO_Port GPIOA
+#define YELLOW_LED_Pin GPIO_PIN_6
+#define YELLOW_LED_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 
