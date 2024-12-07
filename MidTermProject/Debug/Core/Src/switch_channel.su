@@ -1,0 +1,2 @@
+../Core/Src/switch_channel.c:10:19:channel_config	40	static
+../Core/Src/switch_channel.c:55:19:switch_channel_and_read	24	static

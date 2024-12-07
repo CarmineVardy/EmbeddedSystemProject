@@ -27,7 +27,8 @@
 #include "stdio.h"
 #include "switch_channel.h"
 #include "read_temperature.h"
-
+#include <stdint.h>
+#include <math.h>
 
 #define BUTTON_TRESHOLD 1000
 uint8_t  prev_state=1;
@@ -101,8 +102,10 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
-  uint32_t t1,t2;
+  //uint32_t t1,t2;
   uint16_t data_out;
+
+  int singleConvMode;
 
   /* USER CODE END 2 */
 
@@ -117,51 +120,26 @@ int main(void)
 
 	//t1 = HAL_GetTick();
 
-	/*if( read_channel(&data_out, &hadc1, ADC_CHANNEL_0, ADC_SAMPLETIME_3CYCLES) != HAL_OK ){
-		printf("\rRead ADC for Temperature error \r\n");
+
+	singleConvMode = 1;
+	if( switch_channel_and_read(&data_out, &hadc1, ADC_CHANNEL_0, ADC_SAMPLETIME_3CYCLES, singleConvMode) != HAL_OK){
+		printf("\reError with ADC \r\n");
 	}else{
 		//Sensore di temperatura
 		float V, T;
-		read_temperature(&data_out, &V, &T)
+		read_temperature(&data_out, &V, &T);
 		printf("\r%u\t%.2f mV\t%.2f \xB0 C \n", data_out, V, T);
 	}
 
-
-	if( read_channel(&data_out, &hadc1, ADC_CHANNEL_1, ADC_SAMPLETIME_3CYCLES) != HAL_OK ){
-		Error_Handler();
+	if(HAL_GPIO_ReadPin (GPIOC, GPIO_PIN_13)==1){
+		HAL_GPIO_WritePin (GPIOC, RED_LED_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin (GPIOB, YELLOW_LED_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin (GPIOA, GREEN_LED_Pin, GPIO_PIN_SET);
+	}else {
+		HAL_GPIO_WritePin (GPIOA, PUSH_BUTTON_Pin, GPIO_PIN_RESET);
 	}
 
-	if( read_channel(&data_out, &hadc1, ADC_CHANNEL_4, ADC_SAMPLETIME_3CYCLES) != HAL_OK ){
-		Error_Handler();
-	}
-
-	if( read_channel(&data_out, &hadc1, ADC_CHANNEL_5, ADC_SAMPLETIME_3CYCLES) != HAL_OK ){
-		Error_Handler();
-	}
-*/
-
-
-			    if(HAL_GPIO_ReadPin (GPIOC, GPIO_PIN_13)==1){
-
-
-				   HAL_GPIO_WritePin (GPIOC, RED_LED_Pin, GPIO_PIN_SET);
-				   HAL_GPIO_WritePin (GPIOB, YELLOW_LED_Pin, GPIO_PIN_SET);
-				   HAL_GPIO_WritePin (GPIOA, GREEN_LED_Pin, GPIO_PIN_SET);
-
-
-
-			  }else {
-
-			 	  HAL_GPIO_WritePin (GPIOA, PUSH_BUTTON_Pin, GPIO_PIN_RESET);
-
-			  }
-
-
-
-
-
-
-	t2 = HAL_GetTick();
+	//t2 = HAL_GetTick();
 
 	HAL_Delay(1000);
 

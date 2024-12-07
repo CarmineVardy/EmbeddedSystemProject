@@ -41,7 +41,8 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-
+#define	VREF	3340
+#define	LEVELS	4096
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/

@@ -9,8 +9,12 @@
 
 void read_temperature(uint16_t *d_out, float *voltage, float *temp)
 {
-	/*
-	*voltage = (*d_out) * VREF / LEVELS;
-    *temp = (*voltage - V0) / S + T0;
-	*/
+	float resistence;
+
+	*voltage = ( (double) *d_out ) * VREF / LEVELS;
+
+	resistence = (-RS*(*voltage))/(*voltage-VREF);
+
+	*temp = (BETA)/(log(resistence/R0) + BETA/T0) - 273.15;
+
 }
