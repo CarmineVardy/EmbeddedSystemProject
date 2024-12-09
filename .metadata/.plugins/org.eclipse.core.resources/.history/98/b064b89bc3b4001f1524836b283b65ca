@@ -131,16 +131,6 @@ int main(void)
 		printf("\r data:%u\t, voltage:%.2f mV\t, temp:%.1f\xB0 C \n", data_out, V, T);
 	}
 
-
-	if( switch_channel_and_read(&data_out, &hadc1, ADC_CHANNEL_1, ADC_SAMPLETIME_3CYCLES, singleConvMode) != HAL_OK){
-			printf("\reError with ADC \r\n");
-		}else{
-
-
-			printf("\r data:%u\t, voltage:%.2f mV\t \n", data_out, (double) data_out  *( VREF / LEVELS));
-		}
-
-
 	/*if(HAL_GPIO_ReadPin (GPIOC, GPIO_PIN_13)==1){
 		HAL_GPIO_WritePin (GPIOC, RED_LED_Pin, GPIO_PIN_SET);
 		HAL_GPIO_WritePin (GPIOB, YELLOW_LED_Pin, GPIO_PIN_SET);

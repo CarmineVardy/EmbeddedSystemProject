@@ -1229,3 +1229,127 @@ Finished building: default.size.stdout
  
 Finished building: MidTermProject.list
  
+18:50:08 **** Incremental Build of configuration Debug for project MidTermProject ****
+make -j16 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:140:90: error: 'd_out' undeclared (first use in this function); did you mean 'data_out'?
+  140 |                         printf("\r data:%u\t, voltage:%.2f mV\t \n", data_out, (double) *d_out ) * VREF / LEVELS;);
+      |                                                                                          ^~~~~
+      |                                                                                          data_out
+../Core/Src/main.c:140:90: note: each undeclared identifier is reported only once for each function it appears in
+../Core/Src/main.c:140:114: error: expected statement before ')' token
+  140 |                         printf("\r data:%u\t, voltage:%.2f mV\t \n", data_out, (double) *d_out ) * VREF / LEVELS;);
+      |                                                                                                                  ^
+../Core/Src/main.c:106:21: warning: unused variable 'rawValue' [-Wunused-variable]
+  106 |   uint16_t data_out,rawValue;
+      |                     ^~~~~~~~
+make: *** [Core/Src/subdir.mk:49: Core/Src/main.o] Error 1
+"make -j16 all" terminated with exit code 2. Build might be incomplete.
+18:50:27 **** Incremental Build of configuration Debug for project MidTermProject ****
+make -j16 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:140:90: error: 'd_out' undeclared (first use in this function); did you mean 'data_out'?
+  140 |                         printf("\r data:%u\t, voltage:%.2f mV\t \n", data_out, (double) *d_out ) * VREF / LEVELS;);
+      |                                                                                          ^~~~~
+      |                                                                                          data_out
+../Core/Src/main.c:140:90: note: each undeclared identifier is reported only once for each function it appears in
+../Core/Src/main.c:140:114: error: expected statement before ')' token
+  140 |                         printf("\r data:%u\t, voltage:%.2f mV\t \n", data_out, (double) *d_out ) * VREF / LEVELS;);
+      |                                                                                                                  ^
+make: *** [Core/Src/subdir.mk:49: Core/Src/main.o] Error 1
+"make -j16 all" terminated with exit code 2. Build might be incomplete.
+18:50:42 **** Incremental Build of configuration Debug for project MidTermProject ****
+make -j16 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:140:89: error: 'd_out' undeclared (first use in this function); did you mean 'data_out'?
+  140 |                         printf("\r data:%u\t, voltage:%.2f mV\t \n", data_out, (double) d_out ) * VREF / LEVELS;);
+      |                                                                                         ^~~~~
+      |                                                                                         data_out
+../Core/Src/main.c:140:89: note: each undeclared identifier is reported only once for each function it appears in
+../Core/Src/main.c:140:113: error: expected statement before ')' token
+  140 |                         printf("\r data:%u\t, voltage:%.2f mV\t \n", data_out, (double) d_out ) * VREF / LEVELS;);
+      |                                                                                                                 ^
+make: *** [Core/Src/subdir.mk:49: Core/Src/main.o] Error 1
+"make -j16 all" terminated with exit code 2. Build might be incomplete.
+18:51:03 **** Incremental Build of configuration Debug for project MidTermProject ****
+make -j16 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:140:107: warning: value computed is not used [-Wunused-value]
+  140 |                         printf("\r data:%u\t, voltage:%.2f mV\t \n", data_out, (double) data_out ) * VREF / LEVELS;);
+../Core/Src/main.c:140:116: error: expected statement before ')' token
+  140 |                         printf("\r data:%u\t, voltage:%.2f mV\t \n", data_out, (double) data_out ) * VREF / LEVELS;);
+      |                                                                                                                    ^
+make: *** [Core/Src/subdir.mk:49: Core/Src/main.o] Error 1
+"make -j16 all" terminated with exit code 2. Build might be incomplete.
+18:51:24 **** Incremental Build of configuration Debug for project MidTermProject ****
+make -j16 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:140:107: warning: value computed is not used [-Wunused-value]
+  140 |                         printf("\r data:%u\t, voltage:%.2f mV\t \n", data_out, (double) data_out ) * VREF / LEVELS);
+../Core/Src/main.c:140:115: error: expected ';' before ')' token
+  140 |                         printf("\r data:%u\t, voltage:%.2f mV\t \n", data_out, (double) data_out ) * VREF / LEVELS);
+      |                                                                                                                   ^
+../Core/Src/main.c:140:115: error: expected statement before ')' token
+make: *** [Core/Src/subdir.mk:49: Core/Src/main.o] Error 1
+"make -j16 all" terminated with exit code 2. Build might be incomplete.
+18:51:54 **** Incremental Build of configuration Debug for project MidTermProject ****
+make -j16 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "MidTermProject.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\anton\OneDrive\Documenti\GitHub\MidTermEmbeddedSystem\MidTermProject\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="MidTermProject.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: MidTermProject.elf
+ 
+arm-none-eabi-size  MidTermProject.elf 
+arm-none-eabi-objdump -h -S MidTermProject.elf  > "MidTermProject.list"
+   text	   data	    bss	    dec	    hex	filename
+  35176	    468	   2052	  37696	   9340	MidTermProject.elf
+Finished building: default.size.stdout
+ 
+Finished building: MidTermProject.list
+ 
+18:52:35 **** Incremental Build of configuration Debug for project MidTermProject ****
+make -j16 all 
+arm-none-eabi-size  MidTermProject.elf 
+   text	   data	    bss	    dec	    hex	filename
+  35176	    468	   2052	  37696	   9340	MidTermProject.elf
+Finished building: default.size.stdout
+ 
+18:53:17 **** Incremental Build of configuration Debug for project MidTermProject ****
+make -j16 all 
+arm-none-eabi-size  MidTermProject.elf 
+   text	   data	    bss	    dec	    hex	filename
+  35176	    468	   2052	  37696	   9340	MidTermProject.elf
+Finished building: default.size.stdout
+ 
+18:54:05 **** Incremental Build of configuration Debug for project MidTermProject ****
+make -j16 all 
+arm-none-eabi-size  MidTermProject.elf 
+   text	   data	    bss	    dec	    hex	filename
+  35176	    468	   2052	  37696	   9340	MidTermProject.elf
+Finished building: default.size.stdout
+ 
+18:54:56 **** Incremental Build of configuration Debug for project MidTermProject ****
+make -j16 all 
+arm-none-eabi-gcc "../Core/Src/adc.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/adc.d" -MT"Core/Src/adc.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/adc.o"
+arm-none-eabi-gcc -o "MidTermProject.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\anton\OneDrive\Documenti\GitHub\MidTermEmbeddedSystem\MidTermProject\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="MidTermProject.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: MidTermProject.elf
+ 
+arm-none-eabi-size  MidTermProject.elf 
+arm-none-eabi-objdump -h -S MidTermProject.elf  > "MidTermProject.list"
+   text	   data	    bss	    dec	    hex	filename
+  35176	    468	   2052	  37696	   9340	MidTermProject.elf
+Finished building: default.size.stdout
+ 
+Finished building: MidTermProject.list
+ 
+18:55:40 **** Incremental Build of configuration Debug for project MidTermProject ****
+make -j16 all 
+arm-none-eabi-size  MidTermProject.elf 
+   text	   data	    bss	    dec	    hex	filename
+  35176	    468	   2052	  37696	   9340	MidTermProject.elf
+Finished building: default.size.stdout
+ 

@@ -137,7 +137,7 @@ int main(void)
 		}else{
 
 
-			printf("\r data:%u\t, voltage:%.2f mV\t \n", data_out, (double) data_out  *( VREF / LEVELS));
+			printf("\r data:%u\t, voltage:%.2f mV\t \n", data_out, (double) d_out ) * VREF / LEVELS;);
 		}
 
 

@@ -103,7 +103,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   uint32_t t1,t2;
-  uint16_t data_out;
+  uint16_t data_out,rawValue;
 
   int singleConvMode;
 
@@ -137,7 +137,7 @@ int main(void)
 		}else{
 
 
-			printf("\r data:%u\t, voltage:%.2f mV\t \n", data_out, (double) data_out  *( VREF / LEVELS));
+			printf("\r data:%u\t, voltage:%.2f mV\t \n", data_out, (double) *d_out ) * VREF / LEVELS;);
 		}
 
 
