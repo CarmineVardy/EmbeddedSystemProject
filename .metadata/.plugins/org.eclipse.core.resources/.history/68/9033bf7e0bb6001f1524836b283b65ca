@@ -138,8 +138,6 @@ int main(void)
 
 
 			printf("\r data:%u\t, voltage:%.2f mV\t \n", data_out, (double) data_out  *( VREF / LEVELS));
-
-		/*CIAO*/
 		}
 
 
