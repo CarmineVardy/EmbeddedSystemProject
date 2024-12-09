@@ -1,0 +1,16 @@
+/*
+ * read_forceSensor.c
+ *
+ *  Created on: Dec 9, 2024
+ *      Author: anton
+ */
+#include step_Counter.h
+
+
+float read_forceSensor(uint16_t *d_out, float *voltage){
+
+	voltage =d_out*( VREF / LEVELS);
+	resistence = (-RS*(*voltage))/(*voltage-VREF);
+
+
+}

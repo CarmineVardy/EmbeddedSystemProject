@@ -1,0 +1,2 @@
+#define RM 10000
+void read_forceSensor(int16_t *d_out, float *voltage);

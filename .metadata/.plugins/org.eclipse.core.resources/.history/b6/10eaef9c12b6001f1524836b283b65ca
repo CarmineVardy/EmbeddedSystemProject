@@ -1,0 +1,9 @@
+/*
+ * read_forceSensor.c
+ *
+ *  Created on: Dec 9, 2024
+ *      Author: anton
+ */
+#include "step_Counter.h"
+
+

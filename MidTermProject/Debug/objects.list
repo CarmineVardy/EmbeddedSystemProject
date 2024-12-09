@@ -2,6 +2,7 @@
 "./Core/Src/gpio.o"
 "./Core/Src/main.o"
 "./Core/Src/read_temperature.o"
+"./Core/Src/step_Counter.o"
 "./Core/Src/stm32f4xx_hal_msp.o"
 "./Core/Src/stm32f4xx_it.o"
 "./Core/Src/switch_channel.o"

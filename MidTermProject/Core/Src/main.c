@@ -27,6 +27,7 @@
 #include "stdio.h"
 #include "switch_channel.h"
 #include "read_temperature.h"
+#include "step_Counter.h"
 #include <stdint.h>
 #include <math.h>
 
@@ -107,6 +108,7 @@ int main(void)
 
   int singleConvMode;
 
+  printf("Ciao");
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -122,6 +124,8 @@ int main(void)
 
 
 	singleConvMode = 1;
+
+	/*
 	if( switch_channel_and_read(&data_out, &hadc1, ADC_CHANNEL_0, ADC_SAMPLETIME_3CYCLES, singleConvMode) != HAL_OK){
 		printf("\reError with ADC \r\n");
 	}else{
@@ -130,17 +134,14 @@ int main(void)
 		read_temperature(&data_out, &V, &T);
 		printf("\r data:%u\t, voltage:%.2f mV\t, temp:%.1f\xB0 C \n", data_out, V, T);
 	}
+	*/
 
-
-	if( switch_channel_and_read(&data_out, &hadc1, ADC_CHANNEL_1, ADC_SAMPLETIME_3CYCLES, singleConvMode) != HAL_OK){
-			printf("\reError with ADC \r\n");
-		}else{
-
-
-			printf("\r data:%u\t, voltage:%.2f mV\t \n", data_out, (double) data_out  *( VREF / LEVELS));
-
-		/*CIAO*/
-		}
+	float R1,R2;
+	switch_channel_and_read(&data_out, &hadc1, ADC_CHANNEL_1, ADC_SAMPLETIME_3CYCLES, singleConvMode);
+	read_forceSensor(&data_out, &R1);
+	/*switch_channel_and_read(&data_out, &hadc1, ADC_CHANNEL_4, ADC_SAMPLETIME_3CYCLES, singleConvMode);
+	read_forceSensor(&data_out, &R2);*/
+	printf("\rFORCE1: %f", R1);
 
 
 	/*if(HAL_GPIO_ReadPin (GPIOC, GPIO_PIN_13)==1){
@@ -153,9 +154,7 @@ int main(void)
 
 	t2 = HAL_GetTick();
 
-	HAL_Delay(100-(t2-t1));
-
-	HAL_Delay(1000);
+	HAL_Delay(1000-(t2-t1));
 
   }
   /* USER CODE END 3 */

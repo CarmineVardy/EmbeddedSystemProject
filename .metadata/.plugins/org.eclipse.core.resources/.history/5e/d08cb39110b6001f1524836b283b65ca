@@ -1,0 +1,14 @@
+/*
+ * read_forceSensor.c
+ *
+ *  Created on: Dec 9, 2024
+ *      Author: anton
+ */
+#include read_forceSensor.h
+
+
+float read_forceSensor(uint16_t *d_out, float *voltage){
+
+	voltage =d_out*( VREF / LEVELS);
+
+}
