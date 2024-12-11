@@ -1,0 +1,133 @@
+/*
+ * activity_tracking.c
+ *
+ *  Created on: Dec 9, 2024
+ *      Author: anton
+ */
+
+#include "activity_tracking.h"
+#include "led.h"
+#include "time.h"
+
+
+void StepBuffer_init(StepBuffer *buffer) {
+    buffer->index = 0;
+    buffer->total_step_time = 0;
+    for (int i = 0; i < STEP_BUFFER_SIZE; i++) {
+        buffer->steps[i] = 0;
+    }
+}
+
+void UserActivity_init(UserActivity *activity) {
+
+    activity->steps = 0;
+    activity->last_step_time = 0;
+    activity->t1 = 0;
+    activity->right_sensor = 100000;  //ho utilizzato un valore abbastanza alto cosi da evitare di  contare erroneamente passi
+    activity->left_sensor =  100000;
+    activity->step_detection = 0;
+    activity->state = RESTING;
+    activity->last_state_time = 0;
+}
+
+
+const char* userState_to_string(UserActivity *state) {
+    switch(state) {
+        case RESTING: return "RESTING";
+        case WALKING: return "WALKING";
+        case RUNNING: return "RUNNING";
+        default: return "UNKNOWN";
+    }
+}
+
+
+void read_forceSensor(uint16_t *d_out, float *sensor){
+
+	float voltage, R;
+	voltage = ( (double) *d_out ) * VREF / LEVELS;
+	d_out= (uint16_t)voltage;
+	if(voltage<150) // MI ELIMINA IL RUMORE DI FONDO DELLA BREADBOARD PORTANDO LA LETTURA DEGLI FSR AD INFINITO SE EFFETTIVAMENTE NON LI STIAMO PREMENDO
+	   voltage=0;
+
+	*sensor = (VREF*RM-voltage*RM)/voltage;
+}
+
+
+
+
+void step_counter(UserActivity *activity , StepBuffer buffer) {
+    uint32_t current_time = HAL_GetTick();
+    activity->step_detection = 0;
+
+    if (activity->right_sensor <= STEP_TRESHOLD || activity->left_sensor < STEP_TRESHOLD) {
+        if (activity->step_detection == 0) {  // Serve per evitare il conteggio di un passo ripeuto
+            activity->step_detection = 1;
+            activity->steps++;
+
+            uint32_t step_time = current_time - activity->last_step_time;
+
+            // Qu implemento un buffer circolare . Aggiungo il tempo intercorso tra il passo e il precedente. Una volta riempito il buffer vado a fare le media ( come l'esercizio dell ECG)
+            buffer->steps[buffer->index] = step_time;
+            buffer->index = (buffer->index + 1) % STEP_BUFFER_SIZE;
+
+            // Calcola la somma totale dei tempi nel buffer ( mi serve nella detect activity per fare la media)
+            v->total_step_time = 0;
+            for (int i = 0; i < STEP_BUFFER_SIZE; i++) {
+            	buffer->total_step_time += buffer->STEPS[i];
+            }
+
+            activity->last_step_time = current_time;
+        }
+    } else {
+        activity->step_detection = 0;  // Resetta il rilevamento del passo
+    }
+}
+
+
+
+void detect_activity(UserActivity *activity, StepBuffer *buffer, ledConfig *red_led, ledConfig *green_led, ledConfig *yellow_led) {
+    uint32_t current_time = HAL_GetTick();
+
+    // UTENTE FERMO
+    if ((activity->right_sensor >= 0) && (activity->left_sensor >= 0)) {
+        if (activity->t1 == 0) {
+            activity->t1 = current_time;  // Inizializza il tempo se è la prima rilevazione
+        }
+        if ((current_time - activity->t1) >= RESTING_MIN_TIME) {
+            activity->state = RESTING;
+            turnOFF_led(red_led);
+            turnON_led(green_led);
+            turnOFF_led(yellow_led);
+        }
+    } else {
+        // Resetta il tempo se i sensori non rilevano uno stato fermo
+        activity->t1 = 0;
+        turnOFF_led(red_led);
+        turnOFF_led(green_led);
+        turnOFF_led(yellow_led);
+    }
+
+    // UTENTE IN MOVIMENTO: Calcola la media dei tempi tra i passi
+    if (buffer->total_step_time > 0) {
+        uint32_t avg = buffer->total_step_time / MAX_STEP_HISTORY;
+
+        if (avg <= RUNNING_STEP_THRESHOLD) {
+            // Utente sta correndo
+            activity->state = RUNNING;
+            turnON_led(red_led);
+            turnOFF_led(green_led);
+            turnOFF_led(yellow_led);
+        } else {
+            // Utente sta camminando
+            activity->state = WALKING;
+            turnON_led(yellow_led);
+            turnOFF_led(green_led);
+            turnOFF_led(red_led);
+        }
+    }
+}
+
+
+
+
+

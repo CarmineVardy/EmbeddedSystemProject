@@ -1,0 +1,17 @@
+/*
+ * step_Counter.h
+ *
+ *  Created on: Dec 9, 2024
+ *      Author: anton
+ */
+
+#ifndef STEP_COUNTER_H_
+#define STEP_COUNTER_H_
+
+#include "main.h"
+
+#define RM 10000
+void read_forceSensor(uint16_t *d_out, float *resistence);
+
+
+#endif /* STEP_COUNTER_H_ */

@@ -25,15 +25,15 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "button.h"
+#include "activity_tracking.h"
 #include "led.h"
 #include "switch_channel.h"
 #include "read_temperature.h"
-#include "step_Counter.h"
 #include "ECG_module.h"
 #include "interface.h"
-#include <stdio.h>
-#include <stdint.h>
-#include <math.h>
+#include "stdio.h"
+#include "stdint.h"
+#include "math.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -143,7 +143,9 @@ int main(void)
   FilterECGParam filterECG;
   ECGParam ECGparam;
   uint16_t ECG_buf[ECG_BUF_LENGHT], elab_ECG_buf[ELAB_ECG_BUF_SIZE];
-
+  UserActivity userActivity;
+  StepBuffer stepBuffer;
+  StepBuffer_init(&stepBuffer);
   ECG_init(&filterECG, &ECGparam, ECG_buf, elab_ECG_buf, ECG_BUF_LENGHT, ELAB_ECG_BUF_SIZE);
 
   while (1)
@@ -151,15 +153,25 @@ int main(void)
 
 	  t1 = HAL_GetTick();
 
-	  /*
+
   	  //SENSORE DI FORZA
-	  float R1,R2;
+	  switch_channel_and_read(&data_out, &hadc1, ADC_CHANNEL_1, ADC_SAMPLETIME_3CYCLES, singleConvMode);
+	  read_forceSensor(&data_out, &userActivity->right_sensor);
+	  switch_channel_and_read(&data_out, &hadc1, ADC_CHANNEL_4, ADC_SAMPLETIME_3CYCLES, singleConvMode);
+	  read_forceSensor(&data_out, &userActivity->left_sensor);
+
+	  detect_activity(&userActivity,&stepBuffer);
+
+	  // VECCHIO
+	  /*float R1,R2;
 	  switch_channel_and_read(&data_out, &hadc1, ADC_CHANNEL_1, ADC_SAMPLETIME_3CYCLES, singleConvMode);
 	  read_forceSensor(&data_out, &R1);
 	  switch_channel_and_read(&data_out, &hadc1, ADC_CHANNEL_4, ADC_SAMPLETIME_3CYCLES, singleConvMode);
 	  read_forceSensor(&data_out, &R2);
-	  printf("\rFORCE1: %f", R1);
-	  */
+	  printf("\rFORCE1: %f", R1);*/
+
+
+
 
 /*
 	  b_state=read_button(&temp_Button);
