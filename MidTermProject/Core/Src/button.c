@@ -1,0 +1,40 @@
+/*
+ * button.c
+ *
+ *  Created on: Dec 9, 2024
+ *      Author: utente
+ */
+
+#include "button.h"
+#include "stdio.h"
+
+void button_init(buttonConfig* button, uint16_t user_label, GPIO_TypeDef* port, GPIO_PinState init_state) {
+
+	button->GPIO_user_label = user_label;
+    button->GPIO_Port = port;
+    button->temp_state = init_state;
+    button->stable_state = init_state;
+    button->previous_state = init_state;
+    button->count = 0;
+}
+
+
+GPIO_PinState read_button(buttonConfig* button) {
+    GPIO_PinState current_state = HAL_GPIO_ReadPin(button->GPIO_Port, button->GPIO_user_label);
+
+    if (current_state == button->temp_state) {
+        button->count++;
+        if (button->count >= COUNT_LIMIT) {
+            button->count = 0;
+            button->previous_state = button->stable_state;
+            button->stable_state = current_state;
+        }
+    } else {
+        button->count = 0;
+        button->temp_state = current_state;
+    }
+
+    return button->stable_state;
+}
+
+

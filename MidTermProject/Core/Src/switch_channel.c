@@ -38,6 +38,7 @@ HAL_StatusTypeDef channel_config(ADC_HandleTypeDef *hadc, uint32_t channel, uint
 	  return HAL_ERROR;
 	}
 
+
     sConfig.Channel = channel;
     sConfig.Rank = 1;
     sConfig.SamplingTime = sampling_time;
@@ -54,12 +55,14 @@ HAL_StatusTypeDef channel_config(ADC_HandleTypeDef *hadc, uint32_t channel, uint
 // cambia canale e legge il valore ADC
 HAL_StatusTypeDef switch_channel_and_read(uint16_t *d_out, ADC_HandleTypeDef *hadc, uint32_t channel, uint32_t sampling_time, int singleConvMode) {
 
+	HAL_ADC_Stop(&hadc1);
+
 	if( channel_config(hadc, channel, sampling_time, singleConvMode) != HAL_OK){
-		HAL_ADC_Stop(hadc);
 		return HAL_ERROR;
 	}
 
-	HAL_ADC_Start(hadc);
+	HAL_ADC_Start(&hadc1);
+
 
     if( HAL_ADC_PollForConversion(hadc, HAL_MAX_DELAY) == HAL_OK ){
     	*d_out = HAL_ADC_GetValue(hadc); // ritorna il valore letto

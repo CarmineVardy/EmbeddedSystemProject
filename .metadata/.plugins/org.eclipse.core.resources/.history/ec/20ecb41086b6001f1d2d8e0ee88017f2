@@ -1,0 +1,70 @@
+/*
+ * read_temperature.c
+ *
+ *  Created on: Dec 5, 2024
+ *      Author: utente
+ */
+
+#include "read_temperature.h"
+#include <math.h>
+#include <stdio.h>
+
+void init_TemperatureParams(TempParam *tempParam){
+
+	tempParam->currentTemperature = 0.0;
+	tempParam->previousTemperature = 0.0;
+	tempParam->stableTemperature = 0.0;
+	tempParam->isStable = 0;
+	tempParam->stabilityCounter = 0;
+
+}
+
+void read_Temperature(TempParam *tempParam, uint16_t d_out){
+
+	double voltage, resistence;
+	voltage = ( (double) d_out ) * VREF / LEVELS;
+	resistence = (-RS*(voltage))/(voltage-VREF);
+
+	tempParam->currentTemperature = (BETA)/(log(resistence/R0) + BETA/T0) - 273.15;
+
+	// Verifica della stabilità
+	if (fabs(tempParam->currentTemperature - tempParam->previousTemperature) <= STABILITY_THRESHOLD) {
+		tempParam->stabilityCounter++;
+	} else {
+		tempParam->stabilityCounter = 0;
+	}
+
+	if (tempParam->stabilityCounter >= STABILITY_SAMPLES) {
+		tempParam->isStable = 1;
+		param->variationDetected = 0; // Resetta eventuali variazioni
+
+		if (fabs(param->currentTemperature - param->stableTemperature) > STABILITY_THRESHOLD) {
+			tempParam->stableTemperature = tempParam->currentTemperature;
+			printf("Temperatura stabile: %.0f \xB0 C \n", tempParam->stableTemperature);
+		}
+
+	}
+
+	// Stampa la barra di progresso
+	printf("Calcolo temperatura in corso...\n");
+	uint8_t progress = (tempParam->stabilityCounter * 100) / STABILITY_SAMPLES;
+	print_ProgressBar(progress);
+
+	// Aggiorna la temperatura precedente
+	tempParam->previousTemperature = tempParam->currentTemperature;
+}
+
+void print_ProgressBar(uint8_t progress) {
+    printf("[");
+    for (int i = 0; i < 20; i++) {
+        if (i < (progress / 5)) {
+            printf("#");
+        } else {
+            printf("-");
+        }
+    }
+    printf("] %d%%\n", progress);
+}
+
+
+

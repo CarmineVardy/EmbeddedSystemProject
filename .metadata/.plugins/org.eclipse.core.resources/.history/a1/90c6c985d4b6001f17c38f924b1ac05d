@@ -1,0 +1,35 @@
+/*
+ * ECG_module.h
+ *
+ *  Created on: Dec 10, 2024
+ *      Author: utente
+ */
+
+#ifndef INC_ECG_MODULE_H_
+#define INC_ECG_MODULE_H_
+
+#include "adc.h"
+
+#define MAX_ARRAY_DIM	100
+#define TRESHOLDPEAKS	0.75
+
+#define NUM_SAMPLES_FILTERED 1000
+#define NUM_SAMPLES_FOR FILTER 6
+
+
+typedef struct {
+    uint16_t* buffer;
+    float sum;
+    uint16_t index;
+    uint16_t length;
+} ECGParam;
+
+HAL_StatusTypeDef filter_init(ECGParam* ECGparam, uint16_t* buffer);
+
+float read_value(float* sum, float* volts, int* index);
+int calculate_bpm_from_peaks(int *peakIndices, int peakCount);
+void detect_peaks(float *signal, float threshold, int *peakIndices, int *peakCount);
+
+
+
+#endif /* INC_ECG_MODULE_H_ */

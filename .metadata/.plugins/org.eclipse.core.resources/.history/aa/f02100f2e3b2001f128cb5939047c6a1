@@ -1,8 +1,0 @@
-/*
- * read_temperature.c
- *
- *  Created on: Dec 5, 2024
- *      Author: utente
- */
-
-#include "read_temperature.h"

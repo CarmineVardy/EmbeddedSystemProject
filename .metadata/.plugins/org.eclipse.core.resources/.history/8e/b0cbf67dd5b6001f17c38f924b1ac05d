@@ -1,0 +1,19 @@
+/*
+ * ECG_module.c
+ *
+ *  Created on: Dec 10, 2024
+ *      Author: utente
+ */
+
+#include "ECG_module.h"
+
+void ECG_init(ECGParam* ECGparam, uint16_t* buffer,, uint16_t length){
+
+	ECGparam->buffer = buffer;
+	ECGparam->sum = 0.0;
+	ECGparam->index = 0;
+	ECGparam->length = length;
+
+}
+
+

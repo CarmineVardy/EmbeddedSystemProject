@@ -29,8 +29,10 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
  ../Core/Inc/adc.h ../Core/Inc/main.h ../Core/Inc/usart.h \
- ../Core/Inc/gpio.h ../Core/Inc/switch_channel.h ../Core/Inc/adc.h \
- ../Core/Inc/read_temperature.h ../Core/Inc/step_Counter.h
+ ../Core/Inc/gpio.h ../Core/Inc/button.h ../Core/Inc/gpio.h \
+ ../Core/Inc/led.h ../Core/Inc/switch_channel.h ../Core/Inc/adc.h \
+ ../Core/Inc/read_temperature.h ../Core/Inc/step_Counter.h \
+ ../Core/Inc/ECG_module.h ../Core/Inc/interface.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -65,7 +67,12 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/main.h:
 ../Core/Inc/usart.h:
 ../Core/Inc/gpio.h:
+../Core/Inc/button.h:
+../Core/Inc/gpio.h:
+../Core/Inc/led.h:
 ../Core/Inc/switch_channel.h:
 ../Core/Inc/adc.h:
 ../Core/Inc/read_temperature.h:
 ../Core/Inc/step_Counter.h:
+../Core/Inc/ECG_module.h:
+../Core/Inc/interface.h:

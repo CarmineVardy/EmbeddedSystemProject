@@ -1,0 +1,88 @@
+/*
+ * read_temperature.c
+ *
+ *  Created on: Dec 5, 2024
+ *      Author: utente
+ */
+
+#include "read_temperature.h"
+#include <math.h>
+#include <stdio.h>
+
+void init_TemperatureParams(TempParam *tempParam){
+
+	tempParam->currentTemperature = 0.0;
+	tempParam->previousTemperature = 0.0;
+	tempParam->stableTemperature = 0.0;
+	tempParam->isStable = 0;
+	tempParam->stabilityCounter = 0;
+	tempParam->variationDetected = 0;
+
+}
+
+void read_Temperature(TempParam *tempParam, uint16_t d_out){
+
+	double voltage, resistence;
+	voltage = ( (double) d_out ) * VREF / LEVELS;
+	resistence = (-RS*(voltage))/(voltage-VREF);
+
+	tempParam->currentTemperature = (BETA)/(log(resistence/R0) + BETA/T0) - 273.15;
+
+	// Verifica della stabilità
+	if (fabs(tempParam->currentTemperature - tempParam->previousTemperature) > STABILITY_THRESHOLD) {
+
+		if (!tempParam->variationDetected) {
+			tempParam->variationDetected = 1;
+		    printf("\rCalcolo temperatura, possibile variazione...\n");
+		 }
+
+		 tempParam->stabilityCounter = 0;
+		 tempParam->isStable = 0;
+	} else {
+		tempParam->stabilityCounter++;
+
+		if (tempParam->stabilityCounter >= STABILITY_SAMPLES) {
+			if (fabs(tempParam->currentTemperature - tempParam->stableTemperature) > STABILITY_THRESHOLD) {
+				tempParam->stableTemperature = tempParam->currentTemperature;
+				printf("\rTemperatura stabile: %.0f \xB0 C \n", tempParam->stableTemperature);
+		    }
+			tempParam->variationDetected = 0;
+		    tempParam->isStable = 1;
+		}
+		else{
+			 printf("\rPossibile stabilizzazione...\n");
+			 uint8_t progress = (tempParam->stabilityCounter * 100) / STABILITY_SAMPLES;
+			 print_ProgressBar(progress);
+		}
+
+	}
+
+	tempParam->previousTemperature = tempParam->currentTemperature;
+
+}
+
+void print_ProgressBar(uint8_t progress) {
+    printf("\r[");
+    for (int i = 0; i < 20; i++) {
+        if (i < (progress / 5)) {
+            printf("#");
+        } else {
+            printf("-");
+        }
+    }
+    printf("] %d%%\n", progress);
+}
+
+void reset_TemperatureParams(TempParam *tempParam){
+
+	tempParam->currentTemperature = 0.0;
+	tempParam->previousTemperature = 0.0;
+	tempParam->stableTemperature = 0.0;
+	tempParam->isStable = 0;
+	tempParam->stabilityCounter = 0;
+	tempParam->variationDetected = 0;
+
+}
+
+
+

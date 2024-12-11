@@ -24,18 +24,16 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "stdio.h"
+#include "button.h"
+#include "led.h"
 #include "switch_channel.h"
 #include "read_temperature.h"
 #include "step_Counter.h"
+#include "ECG_module.h"
+#include "interface.h"
+#include <stdio.h>
 #include <stdint.h>
 #include <math.h>
-
-#define BUTTON_TRESHOLD 1000
-uint8_t  prev_state=1;
-uint8_t  state;
-uint32_t cnt=0;
-
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -45,6 +43,15 @@ uint32_t cnt=0;
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define ELAB_ECG_TIME 5 // Tempo di elaborazione ECG in secondi
+
+#define SAMPLING_FREQUENCY_ECG 200 //Frequenza per l'ECG
+#define SAMPLING_TIME_ECG (1.0/SAMPLING_FREQUENCY_ECG) //Tempo per ECG in s
+
+#define ECG_BUF_LENGHT (SAMPLING_FREQUENCY_ECG/50) //Lunghezza buffer per il filtro
+
+#define ELAB_ECG_BUF_SIZE (ELAB_ECG_TIME*SAMPLING_FREQUENCY_ECG) //Lunghezza finestra con valori ECG
+
 
 /* USER CODE END PD */
 
@@ -103,59 +110,111 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
+  /* USER CODE END 2 */
+
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
+
   uint32_t t1,t2;
   uint16_t data_out;
 
   int singleConvMode;
 
-  printf("Ciao");
-  /* USER CODE END 2 */
+  /*Dichiarazione e inizializzazione push button*/
+  buttonConfig temp_Button, ECG_Button;
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
+  button_init(&temp_Button, PUSH_BUTTON_1_Pin, GPIOB, GPIO_PIN_SET);
+  button_init(&ECG_Button, PUSH_BUTTON_2_Pin, GPIOA, GPIO_PIN_SET);
+
+  GPIO_PinState b_state;
+
+  /*Dichiarazione e inizializzazione led */
+  ledConfig green_Led, yellow_Led, red_Led;
+
+  led_init(&green_Led, GREEN_LED_Pin, GPIOA, GPIO_PIN_RESET);
+  led_init(&yellow_Led, YELLOW_LED_Pin, GPIOB, GPIO_PIN_RESET);
+  led_init(&red_Led, RED_LED_Pin, GPIOC, GPIO_PIN_RESET);
+
+  /* Dichiarazione e inizializzazione struttura termistore */
+  TempParam tempParam;
+  init_TemperatureParams(&tempParam);
+
+  /* Dichiarazione e inizializzazione struttura ECG */
+  FilterECGParam filterECG;
+  ECGParam ECGparam;
+  uint16_t ECG_buf[ECG_BUF_LENGHT], elab_ECG_buf[ELAB_ECG_BUF_SIZE];
+
+  ECG_init(&filterECG, &ECGparam, ECG_buf, elab_ECG_buf, ECG_BUF_LENGHT, ELAB_ECG_BUF_SIZE);
+
   while (1)
   {
+
+	  t1 = HAL_GetTick();
+
+	  /*
+  	  //SENSORE DI FORZA
+	  float R1,R2;
+	  switch_channel_and_read(&data_out, &hadc1, ADC_CHANNEL_1, ADC_SAMPLETIME_3CYCLES, singleConvMode);
+	  read_forceSensor(&data_out, &R1);
+	  switch_channel_and_read(&data_out, &hadc1, ADC_CHANNEL_4, ADC_SAMPLETIME_3CYCLES, singleConvMode);
+	  read_forceSensor(&data_out, &R2);
+	  printf("\rFORCE1: %f", R1);
+	  */
+
+/*
+	  b_state=read_button(&temp_Button);
+
+	  if (b_state==GPIO_PIN_RESET)
+	  {
+		  //SENSORE DI TEMPERATURA
+		  singleConvMode = 0;
+		  if( switch_channel_and_read(&data_out, &hadc1, ADC_CHANNEL_0, ADC_SAMPLETIME_3CYCLES, singleConvMode) != HAL_OK){
+			  printf("\rError with ADC \n");
+		  }
+		  else {
+		  read_Temperature(&tempParam, data_out);
+		  }
+	  } else if (temp_Button.previous_state == GPIO_PIN_RESET && b_state == GPIO_PIN_SET)
+		  reset_TemperatureParams(&tempParam);
+*/
+
+	  /*
+	  b_state=read_button(&ECG_Button);
+
+	  if (b_state==GPIO_PIN_RESET)
+	  {
+	  	  //SENSORE ECG
+  		  singleConvMode = 1;
+  		  if( switch_channel_and_read(&data_out, &hadc1, ADC_CHANNEL_8, ADC_SAMPLETIME_3CYCLES, singleConvMode) != HAL_OK){
+  			  printf("\rError with ADC \n");
+  		  }
+  		  else {
+  			  filter_signal(&filterECG, &ECGparam, data_out);
+  			  if( ECGparam.count == ECGparam.length ){
+  				  if( elab_ECG(&ECGparam, SAMPLING_TIME_ECG) != HAL_OK) {
+  					  printf("\rError with ECG elaboration, Retry.. \n");
+  				  }
+  				  ECGparam.count = 0;
+  			  }
+  		  }
+	  }else if (ECG_Button.previous_state == GPIO_PIN_RESET && b_state == GPIO_PIN_SET) {
+	      reset_ECG(&filterECG, &ECGparam); // Esegui il reset solo al rilascio
+	  }
+	  */
+
+
+
+
+
+	  t2 = HAL_GetTick();
+
+	  HAL_Delay(5);
+
+	  //HAL_Delay((SAMPLING_TIME_ECG*1000) - (t2-t1));
 
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
-	t1 = HAL_GetTick();
-
-
-	singleConvMode = 1;
-
-	/*
-	if( switch_channel_and_read(&data_out, &hadc1, ADC_CHANNEL_0, ADC_SAMPLETIME_3CYCLES, singleConvMode) != HAL_OK){
-		printf("\reError with ADC \r\n");
-	}else{
-		//Sensore di temperatura
-		float V, T;
-		read_temperature(&data_out, &V, &T);
-		printf("\r data:%u\t, voltage:%.2f mV\t, temp:%.1f\xB0 C \n", data_out, V, T);
-	}
-	*/
-
-	float R1,R2;
-	switch_channel_and_read(&data_out, &hadc1, ADC_CHANNEL_1, ADC_SAMPLETIME_3CYCLES, singleConvMode);
-	read_forceSensor(&data_out, &R1);
-	/*switch_channel_and_read(&data_out, &hadc1, ADC_CHANNEL_4, ADC_SAMPLETIME_3CYCLES, singleConvMode);
-	read_forceSensor(&data_out, &R2);*/
-	printf("\rFORCE1: %f", R1);
-
-
-	/*if(HAL_GPIO_ReadPin (GPIOC, GPIO_PIN_13)==1){
-		HAL_GPIO_WritePin (GPIOC, RED_LED_Pin, GPIO_PIN_SET);
-		HAL_GPIO_WritePin (GPIOB, YELLOW_LED_Pin, GPIO_PIN_SET);
-		HAL_GPIO_WritePin (GPIOA, GREEN_LED_Pin, GPIO_PIN_SET);
-	}else {
-		HAL_GPIO_WritePin (GPIOA, PUSH_BUTTON_Pin, GPIO_PIN_RESET);
-	}*/
-
-	t2 = HAL_GetTick();
-
-	HAL_Delay(1000-(t2-t1));
-
   }
   /* USER CODE END 3 */
 }
@@ -212,41 +271,6 @@ int _write(int file, char *ptr, int len)
 {
 	HAL_UART_Transmit(&huart2, (uint8_t *)ptr, len, HAL_MAX_DELAY);
     return len;
-}
-
-void set_led(int state) {
-    switch (state) {
-
-
-    		//  UTENTE FERMO ---> Accendi LED VERDE
-        case 1:
-        	  HAL_GPIO_WritePin(GPIOA, RED_LED_Pin, GPIO_PIN_RESET);
-			  HAL_GPIO_WritePin(GPIOA, YELLOW_LED_Pin, GPIO_PIN_RESET);
-			  HAL_GPIO_WritePin(GPIOA, GREEN_LED_Pin, GPIO_PIN_SET);
-            break;
-
-            // UTENTE CAMMINA ---> Accendi LED GIALLO
-        case 2:
-            HAL_GPIO_WritePin(GPIOA, RED_LED_Pin, GPIO_PIN_RESET);
-            HAL_GPIO_WritePin(GPIOA, YELLOW_LED_Pin, GPIO_PIN_SET);
-            HAL_GPIO_WritePin(GPIOA, GREEN_LED_Pin, GPIO_PIN_RESET);
-            break;
-
-
-            // UTENTE CORRE ---> Accendi LED ROSSO
-        case 3:
-        	   HAL_GPIO_WritePin(GPIOA, RED_LED_Pin, GPIO_PIN_SET);
-			   HAL_GPIO_WritePin(GPIOA, YELLOW_LED_Pin, GPIO_PIN_RESET);
-        	   HAL_GPIO_WritePin(GPIOA, GREEN_LED_Pin, GPIO_PIN_RESET);
-            break;
-
-            // Nessuno stato -->Spegni i LED
-        default:
-            HAL_GPIO_WritePin(GPIOA, RED_LED_Pin, GPIO_PIN_RESET);
-            HAL_GPIO_WritePin(GPIOA, YELLOW_LED_Pin, GPIO_PIN_RESET);
-            HAL_GPIO_WritePin(GPIOA, GREEN_LED_Pin, GPIO_PIN_RESET);
-            break;
-    }
 }
 
 /* USER CODE END 4 */
