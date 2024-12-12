@@ -146,7 +146,6 @@ int main(void)
   UserActivity userActivity;
   StepBuffer stepBuffer;
   StepBuffer_init(&stepBuffer);
-  UserActivity_init(&userActivity);
   ECG_init(&filterECG, &ECGparam, ECG_buf, elab_ECG_buf, ECG_BUF_LENGHT, ELAB_ECG_BUF_SIZE);
 
   while (1)
@@ -157,16 +156,11 @@ int main(void)
 
   	  //SENSORE DI FORZA
 	  switch_channel_and_read(&data_out, &hadc1, ADC_CHANNEL_1, ADC_SAMPLETIME_3CYCLES, singleConvMode);
-	  read_forceSensor(&data_out, &userActivity.right_sensor);
+	  read_forceSensor(&data_out, &userActivity->right_sensor);
 	  switch_channel_and_read(&data_out, &hadc1, ADC_CHANNEL_4, ADC_SAMPLETIME_3CYCLES, singleConvMode);
-	  read_forceSensor(&data_out, &userActivity.left_sensor);
-	  step_counter(&userActivity, &stepBuffer );
-	  detect_activity(&userActivity,&stepBuffer,&green_Led, &yellow_Led, &red_Led);
+	  read_forceSensor(&data_out, &userActivity->left_sensor);
 
-
-	  printf("\rSTEPS: %d  FSR1: %f    FSR2: %f\n", userActivity->steps ,userActivity->right_sensor,userActivity->left_sensor );
-	  printf("\rSTATE: %s \n", userState_to_string(userActivity.state));
-);
+	  detect_activity(&userActivity,&stepBuffer);
 
 	  // VECCHIO
 	  /*float R1,R2;

@@ -31,14 +31,14 @@ void UserActivity_init(UserActivity *activity) {
 }
 
 
-/*const char* userState_to_string(UserState *state) {
+const char* userState_to_string(UserState *state) {
     switch (state) {
         case RESTING: return "RESTING";
         case WALKING: return "WALKING";
         case RUNNING: return "RUNNING";
         default: return "UNKNOWN";
     }
-}*/
+}
 
 void read_forceSensor(uint16_t *d_out, float *sensor) {
     float voltage;

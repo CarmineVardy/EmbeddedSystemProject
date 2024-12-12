@@ -51,7 +51,7 @@ typedef enum {
     RUNNING
 }UserState;
 
-const char* userState_to_string(UserState *state);
+const char* userState_to_string(UserActivity *state);
 void StepBuffer_init(StepBuffer *buffer);
 void UserActivity_init(UserActivity *activity);
 void read_forceSensor(uint16_t *d_out, float *sensor);
