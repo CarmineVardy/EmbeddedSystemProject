@@ -17,7 +17,6 @@
 #define ACTIVITY_TRACKING_H_
 
 #include "main.h"
-#include "led.h"
 
 #define RM 10000 		//FSR Resistance
 #define STEP_TRESHOLD 2000          // Soglia  per considerare gli fsr premuti e quindi contare un passo
