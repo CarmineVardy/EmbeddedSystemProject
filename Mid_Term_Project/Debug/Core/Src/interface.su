@@ -1,0 +1,8 @@
+../Core/Src/interface.c:14:6:clear_screen	8	static
+../Core/Src/interface.c:19:6:init_interface	8	static
+../Core/Src/interface.c:50:6:update_steps	16	static
+../Core/Src/interface.c:78:6:update_activity	16	static
+../Core/Src/interface.c:111:6:update_temperature	16	static
+../Core/Src/interface.c:128:6:update_temperature_progress	24	static
+../Core/Src/interface.c:150:6:update_temperature_message	8	static
+../Core/Src/interface.c:167:6:clear_temp_interface	8	static

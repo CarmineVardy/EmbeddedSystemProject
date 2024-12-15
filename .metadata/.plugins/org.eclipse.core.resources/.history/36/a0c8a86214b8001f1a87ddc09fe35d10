@@ -1,0 +1,83 @@
+#include "interface.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>  // Per sleep
+
+// Variabile globale per tracciare se la frase è già stata stampata
+static int calculation_started = 0;
+
+// Funzione per cancellare lo schermo (per Linux/MacOS)
+void clear_screen() {
+    printf("\033[H\033[J");
+}
+
+// Funzione per inizializzare l'interfaccia dello smartwatch
+void init_interface() {
+    clear_screen();
+    printf("+-------------------------------+\n");
+    printf("|          SMARTWATCH           |\n");
+    printf("+-------------------------------+\n");
+    printf("| Temp: 0.0 \xB0 C              |\n");
+    printf("|-------------------------------|\n");
+    printf("| Heart Rate: 0 bpm           |\n");
+    printf("| HR Variability: 0 ms        |\n");
+    printf("+-------------------------------+\n");
+    printf("| Status: Active                |\n");
+    printf("+-------------------------------+\n");
+    printf("| Gruppo 1:                     |\n");
+    printf("| Carmine Vardaro               |\n");
+    printf("| Alessia Parente               |\n");
+    printf("| Antonio D'Arienzo             |\n");
+    printf("+-------------------------------+\n");
+}
+
+// Funzione per aggiornare la temperatura
+void update_temperature(float new_temperature) {
+    printf("\033[A");  // Sposta il cursore di una riga in alto
+    printf("\033[K");  // Cancella la riga corrente
+    printf("| Temp: %.1f C                    |\n", new_temperature);
+}
+
+// Funzione per aggiornare il battito cardiaco e la variabilità
+void update_heart_rate_and_variability(int new_heart_rate, int new_hr_variability) {
+    printf("\033[A\033[K");  // Sposta il cursore e cancella la riga precedente
+    printf("| Heart Rate: %d bpm              |\n", new_heart_rate);
+    printf("\033[A\033[K");  // Sposta ancora una riga in alto
+    printf("| HR Variability: %d ms           |\n", new_hr_variability);
+}
+
+// Funzione per aggiungere una riga con un calcolo
+void update_calculation_message(const char* message) {
+    // Spostiamo il cursore per aggiungere una nuova riga tra HRV e Status
+    printf("\033[A\033[K");  // Sposta il cursore sopra la riga dello stato e cancella
+    printf("+-------------------------------+\n");
+    printf("| %s            |\n", message);  // Mostra il messaggio
+    printf("+-------------------------------+\n");
+}
+
+// Funzione per la progress bar
+void print_ProgressBar(uint8_t progress) {
+    printf("\r[");
+    for (int i = 0; i < 20; i++) {
+        printf(i < (progress / 5) ? "#" : "-");
+    }
+    printf("] %d%%", progress);
+    fflush(stdout);
+}
+
+// Funzione che aggiorna la progress bar e la rimuove quando non è più necessaria
+void update_progress_bar(uint8_t progress) {
+    print_ProgressBar(progress);
+
+    // Se il progresso è al 100%, cancella la progress bar
+    if (progress == 100) {
+        clear_progress_bar();
+    }
+}
+
+
+// Funzione per rimuovere la progress bar
+void clear_progress_bar() {
+    printf("\033[A\033[K");  // Sposta il cursore di una riga sopra e cancella la riga
+}
+

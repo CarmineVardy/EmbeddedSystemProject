@@ -1,0 +1,14 @@
+/*
+ * interface.h
+ *
+ *  Created on: Dec 12, 2024
+ *      Author: utente
+ */
+
+#ifndef INC_INTERFACE_H_
+#define INC_INTERFACE_H_
+
+
+void init_interface(); //Metodo per l'inizializzazione dell'interfaccia
+
+#endif /* INC_INTERFACE_H_ */

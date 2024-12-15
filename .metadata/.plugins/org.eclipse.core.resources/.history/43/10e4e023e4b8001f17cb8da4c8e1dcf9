@@ -1,0 +1,52 @@
+/*
+ * activity_tracking.h
+ *
+ *  Created on: Dec 12, 2024
+ *      Author: utente
+ */
+
+#ifndef INC_ACTIVITY_TRACKING_H_
+#define INC_ACTIVITY_TRACKING_H_
+
+#include "main.h"
+#include "led.h"
+
+#define STEP_TRESHOLD 500     		//Treshold necessary to evaluate steps (<500 piede alzato, >500 piede abbasato)
+
+#define RUNNING_THRESHOLD 500
+#define WALKING_THRESHOLD 1000
+#define STANDING_THRESHOLD 1500
+
+
+//This enum is used in order to save the current state detected.
+typedef enum {
+    RESTING,
+    WALKING,
+    RUNNING
+}UserState;
+
+typedef struct {
+    float data;               // Dato letto dal sensore FSR
+    uint8_t foot_on_ground;   // Stato del piede (0 = sollevato, 1 = a terra)
+} FSR_Sensor;
+
+typedef struct {
+    uint32_t steps;           // Numero totale di passi
+    uint32_t last_step_time;  // Tempo dell'ultimo passo rilevato (in millisecondi)
+    FSR_Sensor left_foot;     // Sensore FSR per il piede sinistro
+    FSR_Sensor right_foot;    // Sensore FSR per il piede destro
+} UserActivity;
+
+
+typedef struct {
+    uint32_t *steps;          // Puntatore all'array che contiene i tempi tra i passi
+    int8_t index;             // Indice dell'ultimo passo inserito
+    uint32_t total_step_time; // Somma dei tempi contenuti nel buffer
+    uint32_t length;          // Lunghezza dell'array (buffer size)
+} StepBuffer;
+
+
+#endif /* INC_ACTIVITY_TRACKING_H_ */
+
+
+

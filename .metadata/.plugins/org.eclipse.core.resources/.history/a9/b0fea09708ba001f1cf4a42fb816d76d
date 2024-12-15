@@ -1,0 +1,301 @@
+/* USER CODE BEGIN Header */
+/**
+  ******************************************************************************
+  * @file           : main.c
+  * @brief          : Main program body
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2024 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  */
+/* USER CODE END Header */
+/* Includes ------------------------------------------------------------------*/
+#include "main.h"
+#include "adc.h"
+#include "usart.h"
+#include "gpio.h"
+
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
+#include <stdio.h>
+#include "interface.h"
+#include "button.h"
+#include "led.h"
+#include "switch_channel.h"
+#include "activity_tracking.h"
+
+/* USER CODE END Includes */
+
+/* Private typedef -----------------------------------------------------------*/
+/* USER CODE BEGIN PTD */
+
+/* USER CODE END PTD */
+
+/* Private define ------------------------------------------------------------*/
+/* USER CODE BEGIN PD */
+
+// Intervalli di campionamento in millisecondi
+#define STEP_SAMPLING_INTERVAL 10  // Intervallo per il contapassi (1000 ms)
+#define ECG_SAMPLING_INTERVAL 5      // Intervallo per il campionamento ECG (5 ms)
+#define TEMP_SAMPLING_INTERVAL 100   // Intervallo per il campionamento temperatura (100 ms)
+
+//FOR ACTIVITY TRACKING
+#define STEP_BUFFER_SIZE 5
+
+//FOR TEMP
+
+//FOR ECG
+
+/* USER CODE END PD */
+
+/* Private macro -------------------------------------------------------------*/
+/* USER CODE BEGIN PM */
+
+/* USER CODE END PM */
+
+/* Private variables ---------------------------------------------------------*/
+
+/* USER CODE BEGIN PV */
+
+/* USER CODE END PV */
+
+/* Private function prototypes -----------------------------------------------*/
+void SystemClock_Config(void);
+/* USER CODE BEGIN PFP */
+
+/* USER CODE END PFP */
+
+/* Private user code ---------------------------------------------------------*/
+/* USER CODE BEGIN 0 */
+
+/* USER CODE END 0 */
+
+/**
+  * @brief  The application entry point.
+  * @retval int
+  */
+int main(void)
+{
+
+  /* USER CODE BEGIN 1 */
+
+  /* USER CODE END 1 */
+
+  /* MCU Configuration--------------------------------------------------------*/
+
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_Init();
+
+  /* USER CODE BEGIN Init */
+
+  /* USER CODE END Init */
+
+  /* Configure the system clock */
+  SystemClock_Config();
+
+  /* USER CODE BEGIN SysInit */
+
+  /* USER CODE END SysInit */
+
+  /* Initialize all configured peripherals */
+  MX_GPIO_Init();
+  MX_USART2_UART_Init();
+  MX_ADC1_Init();
+  /* USER CODE BEGIN 2 */
+
+  clear_screen();
+  //init_interface();
+
+  uint16_t data_out_1,data_out_2;
+
+  // Variabili globali per gestire i tempi di campionamento
+  //uint32_t last_step_time = 0;
+  //uint32_t last_ecg_time = 0;
+  //uint32_t last_temp_time = 0;
+  //uint32_t current_time = 0;
+
+  uint32_t t1, t2, current_time = 0;
+  uint32_t last_step_time = 0, last_temp_time = 0, last_ecg_time = 0;
+
+  /*Dichiarazione e inizializzazione push button (utilizzo di button.h)*/
+  buttonConfig temp_Button, ECG_Button; // Dichiarazione delle variabili per configurare i pulsanti
+  button_init(&temp_Button, PUSH_BUTTON_1_Pin, GPIOB, GPIO_PIN_SET); // Inizializzazione del pulsante per la temperatura (con etichetta, porta e stato iniziale)
+  button_init(&ECG_Button, PUSH_BUTTON_2_Pin, GPIOA, GPIO_PIN_SET);  // Inizializzazione del pulsante per il monitoraggio ECG (con etichetta, porta e stato iniziale)
+  GPIO_PinState b_state_temp,b_state_ECG ;  // Dichiarazione delle variabili per memorizzare lo stato attuale dei pulsanti
+
+  /*Dichiarazione e inizializzazione led (utilizzo di led.h)*/
+  LedArray leds; // Creazione della struttura che contiene tutti e tre i LED
+  led_init(&leds.green_Led, GREEN_LED_Pin, GPIOA, GPIO_PIN_RESET);   // LED verde
+  led_init(&leds.yellow_Led, YELLOW_LED_Pin, GPIOB, GPIO_PIN_RESET); // LED giallo
+  led_init(&leds.red_Led, RED_LED_Pin, GPIOC, GPIO_PIN_RESET);      // LED rosso
+
+  /*Dichiarazione e inizializzazione acticity tracking (utilizzo di activity_tracking.h)*/
+  UserActivity userActivity;
+  StepBuffer stepBuffer;
+  uint32_t STEP_buf[STEP_BUFFER_SIZE];
+  UserActivity_init(&userActivity); // Inizializzazione della struttura UserActivity4
+  StepBuffer_init(&stepBuffer, STEP_buf, STEP_BUFFER_SIZE); // Inizializzazione della struttura StepBuffer
+
+  /* USER CODE END 2 */
+
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
+  while (1)
+  {
+	  t1 = HAL_GetTick();  // Ottieni il tempo corrente all'inizio del ciclo
+
+	     current_time = HAL_GetTick();  // Ottieni il tempo corrente (in ms)
+
+	     // Gestione del contapassi (ogni 10 ms)
+	     if ((current_time - last_step_time) >= STEP_SAMPLING_INTERVAL) {
+	         // Esegui il campionamento per il contapassi
+	         if (switch_channel_and_read(&hadc1, ADC_CHANNEL_1, &data_out_1) != HAL_OK ||
+	             switch_channel_and_read(&hadc1, ADC_CHANNEL_4, &data_out_2) != HAL_OK) {
+	             printf("\rError with ADC\n");
+	         } else {
+	             read_forceSensor(&data_out_1, &userActivity.left_foot);
+	             read_forceSensor(&data_out_2, &userActivity.right_foot);
+	             update_step_count(&userActivity, current_time, &stepBuffer);
+
+	             // Logica per determinare lo stato dell'attività (WALKING, RUNNING, RESTING)
+	             if (userActivity.state == WALKING) {
+	                 control_led(&leds, &leds.yellow_Led);  // Accendi LED giallo
+	             } else if (userActivity.state == RUNNING) {
+	                 control_led(&leds, &leds.green_Led);  // Accendi LED verde
+	             } else if (userActivity.state == RESTING) {
+	                 control_led(&leds, &leds.red_Led);  // Accendi LED rosso
+	             }
+	         }
+
+	         last_step_time = current_time;  // Aggiorna il tempo dell'ultimo campionamento
+	     }
+
+	     // Gestione del bottone della temperatura
+	     b_state_temp = read_button(&temp_Button);
+	     if (b_state_temp == GPIO_PIN_RESET) {  // Pulsante temperatura premuto
+	         // Campionamento temperatura solo se il pulsante è premuto
+	         if ((current_time - last_temp_time) >= TEMP_SAMPLING_INTERVAL) {
+	             printf("\rTemperature Sampling at: %u ms\n", current_time);
+	             last_temp_time = current_time;  // Aggiorna il tempo dell'ultimo campionamento temperatura
+	         }
+	     }
+
+	     // Gestione del bottone ECG
+	     b_state_ecg = read_button(&ECG_Button);
+	     if (b_state_ecg == GPIO_PIN_RESET) {  // Pulsante ECG premuto
+	         if ((current_time - last_ecg_time) >= ECG_SAMPLING_INTERVAL) {
+	             printf("\rECG Sampling at: %u ms\n", current_time);
+	             last_ecg_time = current_time;  // Aggiorna il tempo dell'ultimo campionamento ECG
+	         }
+	     }
+
+	     t2 = HAL_GetTick();  // Ottieni il tempo corrente al termine del ciclo
+
+	     // Calcola la durata del ciclo
+	     uint32_t cycle_duration = t2 - t1;
+
+	     // Se il ciclo è più corto di 5 ms, aspetta il tempo rimanente
+	     if (cycle_duration < 5) {
+	         HAL_Delay(5 - cycle_duration);  // Aspetta il tempo rimanente
+	     }
+    /* USER CODE END WHILE */
+
+    /* USER CODE BEGIN 3 */
+  }
+  /* USER CODE END 3 */
+}
+
+/**
+  * @brief System Clock Configuration
+  * @retval None
+  */
+void SystemClock_Config(void)
+{
+  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+
+  /** Configure the main internal regulator output voltage
+  */
+  __HAL_RCC_PWR_CLK_ENABLE();
+  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE2);
+
+  /** Initializes the RCC Oscillators according to the specified parameters
+  * in the RCC_OscInitTypeDef structure.
+  */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+  RCC_OscInitStruct.PLL.PLLM = 16;
+  RCC_OscInitStruct.PLL.PLLN = 336;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
+  RCC_OscInitStruct.PLL.PLLQ = 7;
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Initializes the CPU, AHB and APB buses clocks
+  */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
+
+/* USER CODE BEGIN 4 */
+
+int _write(int file, char *ptr, int len)
+{
+	HAL_UART_Transmit(&huart2, (uint8_t *)ptr, len, HAL_MAX_DELAY);
+    return len;
+}
+
+/* USER CODE END 4 */
+
+/**
+  * @brief  This function is executed in case of error occurrence.
+  * @retval None
+  */
+void Error_Handler(void)
+{
+  /* USER CODE BEGIN Error_Handler_Debug */
+  /* User can add his own implementation to report the HAL error return state */
+  __disable_irq();
+  while (1)
+  {
+  }
+  /* USER CODE END Error_Handler_Debug */
+}
+
+#ifdef  USE_FULL_ASSERT
+/**
+  * @brief  Reports the name of the source file and the source line number
+  *         where the assert_param error has occurred.
+  * @param  file: pointer to the source file name
+  * @param  line: assert_param error line source number
+  * @retval None
+  */
+void assert_failed(uint8_t *file, uint32_t line)
+{
+  /* USER CODE BEGIN 6 */
+  /* User can add his own implementation to report the file name and line number,
+     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+  /* USER CODE END 6 */
+}
+#endif /* USE_FULL_ASSERT */

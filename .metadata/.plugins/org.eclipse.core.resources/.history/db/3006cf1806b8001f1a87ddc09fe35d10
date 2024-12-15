@@ -1,0 +1,72 @@
+/*
+ * read_temperature.c
+ *
+ *  Created on: Dec 5, 2024
+ *      Author: utente
+ */
+
+#include "read_temperature.h"
+#include <math.h>
+
+void init_TemperatureParams(TempParam *tempParam){
+
+	tempParam->currentTemperature = 0.0;
+	tempParam->previousTemperature = 0.0;
+	tempParam->stableTemperature = 0.0;
+	tempParam->isStable = 0;
+	tempParam->stabilityCounter = 0;
+	tempParam->variationDetected = 0;
+}
+
+double calculate_Temperature(uint16_t d_out) {
+    d
+	ouble voltage = ((double)d_out) * VREF / LEVELS;
+    double resistance = (-RS * (voltage)) / (voltage - VREF);
+
+    // Calcola la temperatura a partire dalla resistenza
+    return (BETA) / (log(resistance / R0) + BETA / T0) - 273.15;
+}
+
+void read_Temperature(TempParam *tempParam, uint16_t d_out) {
+
+	tempParam->currentTemperature = calculate_TemperatureFromVoltage(d_out);
+
+    check_Stability(tempParam);
+
+    tempParam->previousTemperature = tempParam->currentTemperature;
+}
+
+void check_Stability(TempParam *tempParam) {
+    if (fabs(tempParam->currentTemperature - tempParam->previousTemperature) > STABILITY_THRESHOLD) {
+        if (!tempParam->variationDetected) {
+            tempParam->variationDetected = 1;
+            tempParam->isStable = 0;
+        }
+        tempParam->stabilityCounter = 0;
+    } else {
+        if (tempParam->variationDetected) {
+            tempParam->stabilityCounter++;
+            if (tempParam->stabilityCounter >= STABILITY_SAMPLES) {
+                if (fabs(tempParam->currentTemperature - tempParam->stableTemperature) > STABILITY_THRESHOLD) {
+                    tempParam->stableTemperature = tempParam->currentTemperature;
+                }
+                tempParam->variationDetected = 0;
+                tempParam->isStable = 1;
+            }
+        }
+    }
+}
+
+void reset_TemperatureParams(TempParam *tempParam){
+
+	tempParam->currentTemperature = 0.0;
+	tempParam->previousTemperature = 0.0;
+	tempParam->stableTemperature = 0.0;
+	tempParam->isStable = 0;
+	tempParam->stabilityCounter = 0;
+	tempParam->variationDetected = 0;
+
+}
+
+
+

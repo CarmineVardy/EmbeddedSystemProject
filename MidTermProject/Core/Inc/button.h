@@ -10,7 +10,7 @@
 
 #include "gpio.h"
 
-#define COUNT_LIMIT 1
+#define COUNT_LIMIT 2
 
 typedef struct {
     uint16_t GPIO_user_label;

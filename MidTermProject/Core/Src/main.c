@@ -43,14 +43,22 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
+//FOR ECG
 #define ELAB_ECG_TIME 5 // Tempo di elaborazione ECG in secondi
 
 #define SAMPLING_FREQUENCY_ECG 200 //Frequenza per l'ECG
-#define SAMPLING_TIME_ECG (1.0/SAMPLING_FREQUENCY_ECG) //Tempo per ECG in s
+#define SAMPLING_TIME_ECG 0.005 //Tempo per ECG in s (1.0/SAMPLING_FREQUENCY_ECG)
 
-#define ECG_BUF_LENGHT (SAMPLING_FREQUENCY_ECG/50) //Lunghezza buffer per il filtro
+#define ECG_BUF_LENGHT 4 //Lunghezza buffer per il filtro (SAMPLING_FREQUENCY_ECG/50)
 
-#define ELAB_ECG_BUF_SIZE (ELAB_ECG_TIME*SAMPLING_FREQUENCY_ECG) //Lunghezza finestra con valori ECG
+#define ELAB_ECG_BUF_SIZE 1000 //Lunghezza finestra con valori ECG (ELAB_ECG_TIME*SAMPLING_FREQUENCY_ECG)
+
+//FOR TEMP
+#define SAMPLING_TIME_TEMP 0.5 //Tempo per temperatura in s
+
+//FOR STEP_COUNTER
+#define SAMPLING_TIME_STEP_COUNT 0.1 //Tempo per temperatura in s
 
 
 /* USER CODE END PD */
@@ -68,6 +76,7 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+void print_ProgressBar1(uint8_t progress);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -115,8 +124,12 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  uint32_t t1,t2;
+  init_interface();
+
   uint16_t data_out;
+
+  uint32_t t1, t2;
+  uint32_t time_counter = 0;  // Contatore per il tempo in millisecondi
 
   int singleConvMode;
 
@@ -126,7 +139,7 @@ int main(void)
   button_init(&temp_Button, PUSH_BUTTON_1_Pin, GPIOB, GPIO_PIN_SET);
   button_init(&ECG_Button, PUSH_BUTTON_2_Pin, GPIOA, GPIO_PIN_SET);
 
-  GPIO_PinState b_state;
+  GPIO_PinState b_state_temp, b_state_ECG;
 
   /*Dichiarazione e inizializzazione led */
   ledConfig green_Led, yellow_Led, red_Led;
@@ -143,17 +156,24 @@ int main(void)
   FilterECGParam filterECG;
   ECGParam ECGparam;
   uint16_t ECG_buf[ECG_BUF_LENGHT], elab_ECG_buf[ELAB_ECG_BUF_SIZE];
+<<<<<<< Updated upstream
   UserActivity userActivity;
   StepBuffer stepBuffer;
   StepBuffer_init(&stepBuffer);
   UserActivity_init(&userActivity);
   ECG_init(&filterECG, &ECGparam, ECG_buf, elab_ECG_buf, ECG_BUF_LENGHT, ELAB_ECG_BUF_SIZE);
+=======
+
+  ECG_init_Filter(&filterECG, ECG_buf, ECG_BUF_LENGHT);
+  ECG_init_ECG(&ECGparam, elab_ECG_buf, ELAB_ECG_BUF_SIZE);
+>>>>>>> Stashed changes
 
   while (1)
   {
 
 	  t1 = HAL_GetTick();
 
+<<<<<<< Updated upstream
 
   	  //SENSORE DI FORZA
 	  switch_channel_and_read(&data_out, &hadc1, ADC_CHANNEL_1, ADC_SAMPLETIME_3CYCLES, singleConvMode);
@@ -178,57 +198,88 @@ int main(void)
 
 
 
+=======
+	  time_counter+=5; // Incrementa il contatore ogni millisecondo
+>>>>>>> Stashed changes
 
-/*
-	  b_state=read_button(&temp_Button);
+	  /* Gestione bottone per temperatura */
+	  b_state_temp = read_button(&temp_Button);
 
-	  if (b_state==GPIO_PIN_RESET)
-	  {
-		  //SENSORE DI TEMPERATURA
-		  singleConvMode = 0;
-		  if( switch_channel_and_read(&data_out, &hadc1, ADC_CHANNEL_0, ADC_SAMPLETIME_3CYCLES, singleConvMode) != HAL_OK){
-			  printf("\rError with ADC \n");
-		  }
-		  else {
-		  read_Temperature(&tempParam, data_out);
-		  }
-	  } else if (temp_Button.previous_state == GPIO_PIN_RESET && b_state == GPIO_PIN_SET)
-		  reset_TemperatureParams(&tempParam);
-*/
+	  if (b_state_temp == GPIO_PIN_RESET) {
+	      // Campionamento temperatura ogni 1000ms (1 secondo)
+	      if (time_counter % (uint32_t) (SAMPLING_TIME_TEMP * 1000) == 0) { // Ogni 1000ms, campiona la temperatura
+	          singleConvMode = 0;
+	          if (switch_channel_and_read(&data_out, &hadc1, ADC_CHANNEL_0, ADC_SAMPLETIME_3CYCLES, singleConvMode) != HAL_OK) {
+	              printf("\rError with ADC \n");
+	          } else {
+	              read_Temperature(&tempParam, data_out);
+	              if (!tempParam.isStable) {
+	            	  //uint8_t progress = (tempParam.stabilityCounter * 100) / STABILITY_SAMPLES;
 
-	  /*
-	  b_state=read_button(&ECG_Button);
+	            	  //print_ProgressBar1(progress);
 
-	  if (b_state==GPIO_PIN_RESET)
-	  {
-	  	  //SENSORE ECG
-  		  singleConvMode = 1;
-  		  if( switch_channel_and_read(&data_out, &hadc1, ADC_CHANNEL_8, ADC_SAMPLETIME_3CYCLES, singleConvMode) != HAL_OK){
-  			  printf("\rError with ADC \n");
-  		  }
-  		  else {
-  			  filter_signal(&filterECG, &ECGparam, data_out);
-  			  if( ECGparam.count == ECGparam.length ){
-  				  if( elab_ECG(&ECGparam, SAMPLING_TIME_ECG) != HAL_OK) {
-  					  printf("\rError with ECG elaboration, Retry.. \n");
-  				  }
-  				  ECGparam.count = 0;
-  			  }
-  		  }
-	  }else if (ECG_Button.previous_state == GPIO_PIN_RESET && b_state == GPIO_PIN_SET) {
-	      reset_ECG(&filterECG, &ECGparam); // Esegui il reset solo al rilascio
+	            	  //update_progress_bar(progress);  // Mostra il progresso
+	              } else {
+	            	  //printf("\rTemp: %.1f \n",tempParam.stableTemperature );
+	            	  //tempParam.isStable = 0;
+	                  //update_temperature(tempParam.stableTemperature);  // Temperatura stabile
+	              }
+	          }
+	      }
+	  } else if (temp_Button.previous_state == GPIO_PIN_RESET && b_state_temp == GPIO_PIN_SET) {
+	      reset_TemperatureParams(&tempParam);
+	      //clear_progress_bar();
 	  }
-	  */
+
+
+	  /* Gestione bottone per ECG/HRV */
+	  b_state_ECG = read_button(&ECG_Button);
+
+	  if (b_state_ECG == GPIO_PIN_RESET) {
+	      // Campionamento ECG ogni 5ms
+	      if (time_counter % (uint32_t) (SAMPLING_TIME_ECG * 1000) == 0) { // Ogni 5ms, campiona ECG
+	          singleConvMode = 1;
+	          if (switch_channel_and_read(&data_out, &hadc1, ADC_CHANNEL_8, ADC_SAMPLETIME_3CYCLES, singleConvMode) != HAL_OK) {
+	              printf("\rError with ADC \n");
+	          } else {
+	              filter_signal(&filterECG, &ECGparam, data_out);
+                  uint8_t progress = (ECGparam.count * 100) / ECGparam.length;
+
+                  print_ProgressBar1(progress);
+                  //update_progress_bar(progress);  // Mostra il progresso
+	              if (ECGparam.count == ECGparam.length) {
+	                  if (elab_ECG(&ECGparam, SAMPLING_FREQUENCY_ECG) != HAL_OK) {
+	                      printf("\rError with ECG elaboration, Retry.. \n");
+	                  } else {
+	                	  printf("\rHR: %d, HRV: %f\n",ECGparam.HR, ECGparam.HRV );
+	                	  //update_heart_rate_and_variability(ECGparam.HR, ECGparam.HRV);  // Aggiorna HR e HRV
+	                  }
+	                  ECGparam.count = 0; // Reset dopo l'elaborazione
+	              }
+	          }
+	      }
+	  } else if (ECG_Button.previous_state == GPIO_PIN_RESET && b_state_ECG == GPIO_PIN_SET) {
+	      reset_ECG(&filterECG, &ECGparam);
+	      //clear_progress_bar();
+	  }
 
 
 
+	  /* Ciclo di delay per la gestione del contapassi */
+	  if (time_counter % (uint32_t)(SAMPLING_TIME_STEP_COUNT * 1000) == 0) {
+	      // Qui si implementa il contatore dei passi
+	  }
 
+	  // Riavvia il contatore a zero ogni secondo, se necessario
+	  if (time_counter >= 1000) {
+	      time_counter = 0;
+	  }
 
 	  t2 = HAL_GetTick();
-
-	  HAL_Delay(5);
-
-	  //HAL_Delay((SAMPLING_TIME_ECG*1000) - (t2-t1));
+	  if (t2 - t1 < 5) {
+	      // Aspetta il tempo mancante per arrivare a 5 millisecondi
+	      HAL_Delay(5 - (t2 - t1));
+	  }
 
     /* USER CODE END WHILE */
 
@@ -289,6 +340,15 @@ int _write(int file, char *ptr, int len)
 {
 	HAL_UART_Transmit(&huart2, (uint8_t *)ptr, len, HAL_MAX_DELAY);
     return len;
+}
+
+void print_ProgressBar1(uint8_t progress) {
+    printf("\r[");
+    for (int i = 0; i < 20; i++) {
+        printf(i < (progress / 5) ? "#" : "-");
+    }
+    printf("] %d%%", progress);
+    fflush(stdout);
 }
 
 /* USER CODE END 4 */

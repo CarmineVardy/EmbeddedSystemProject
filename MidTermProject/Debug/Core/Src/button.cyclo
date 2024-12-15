@@ -1,2 +1,2 @@
 ../Core/Src/button.c:11:6:button_init	1
-../Core/Src/button.c:22:15:read_button	3
+../Core/Src/button.c:23:15:read_button	3
