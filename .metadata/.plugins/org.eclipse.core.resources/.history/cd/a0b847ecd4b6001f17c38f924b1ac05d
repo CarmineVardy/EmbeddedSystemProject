@@ -1,0 +1,14 @@
+/*
+ * ECG_module.c
+ *
+ *  Created on: Dec 10, 2024
+ *      Author: utente
+ */
+
+#include "ECG_module.h"
+
+HAL_StatusTypeDef ECG_init(ECGParam* ECGparam, uint16_t* buffer){
+
+}
+
+

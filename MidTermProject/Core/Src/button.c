@@ -16,7 +16,6 @@ void button_init(buttonConfig* button, uint16_t user_label, GPIO_TypeDef* port, 
     button->stable_state = init_state;
     button->previous_state = init_state;
     button->count = 0;
-
 }
 
 

@@ -1,0 +1,39 @@
+/*
+ * ECG_module.c
+ *
+ *  Created on: Dec 10, 2024
+ *      Author: utente
+ */
+
+#include "ECG_module.h"
+
+void ECG_init(FilterECGParam* FilterECGparam, ECGParam* ECGparam, uint16_t* buffer1, uint16_t* buffer2, uint16_t length1, uint16_t length2){
+
+	FilterECGparam->buffer = buffer1;
+	FilterECGparam->sum = 0.0;
+	FilterECGparam->index = 0;
+	FilterECGparam->length = length1;
+
+	for (uint16_t i = 0; i < length1; i++)
+	{
+		buffer1[i] = 0;
+	}
+
+	ECGparam->buffer = buffer2;
+	ECGparam->index = 0;
+	ECGparam->lenght = lenght2;
+
+}
+
+void filter_signal(FilterECGParam* FilterECGparam, uint16_t d_out)
+{
+	FilterECGparam->sum = FilterECGparam->sum - FilterECGparam->buffer[FilterECGparam->index] + d_out;
+	FilterECGparamr->buffer[FilterECGparam->index] = d_out;
+	FilterECGparam->index = (FilterECGparam->index + 1) % FilterECGparam->length;
+
+
+	FilterECGparam->sum / FilterECGparam->lenght;
+
+}
+
+

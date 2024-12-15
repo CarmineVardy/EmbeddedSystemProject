@@ -8,18 +8,27 @@
 #ifndef INC_INTERFACE_H_
 #define INC_INTERFACE_H_
 
-#include <stdint.h>
 
-void clear_screen();
+// Funzione per inizializzare l'interfaccia
 void init_interface();
+
+// Funzione per aggiornare la temperatura
 void update_temperature(float new_temperature);
-void update_heart_rate_and_variability(int new_heart_rate, int new_hr_variability);
-void update_progress_bar_with_message(uint8_t progress, const char* message, int* message_displayed);
-void update_temperature_with_progress(float new_temperature, uint8_t progress);
-void update_heart_rate_and_variability_with_progress(int new_heart_rate, int new_hr_variability, uint8_t progress);
-void print_ProgressBar(uint8_t progress);
-void update_progress_bar(uint8_t progress);
-void clear_progress_bar();
+
+// Funzione per aggiornare il battito cardiaco
+void update_heart_rate(int new_heart_rate);
+
+// Funzione per aggiornare il numero di passi
+void update_steps(int new_step_count);
+
+// Funzione per aggiungere una riga con un calcolo (esempio: operazione tra battito e passi)
+void update_calculation(int heart_rate, int step_count);
+
+// Funzione per cambiare lo stato dell'attività (fermo, camminando, correndo)
+void update_activity_status(const char *status);
+
+// Funzione per cancellare lo schermo
+void clear_screen();
 
 #endif /* INC_INTERFACE_H_ */
 

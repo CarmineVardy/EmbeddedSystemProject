@@ -1,11 +1,17 @@
+/*
+ * interface.c
+ *
+ *  Created on: Dec 10, 2024
+ *      Author: utente
+ */
+
 #include "interface.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>  // Per sleep
 
-// Variabili globali per tracciare se i messaggi sono già stati visualizzati
-static int temp_message_displayed = 0;
-static int hr_message_displayed = 0;
+// Variabile globale per tracciare se la frase è già stata stampata
+static int calculation_started = 0;
 
 // Funzione per cancellare lo schermo (per Linux/MacOS)
 void clear_screen() {
@@ -14,22 +20,26 @@ void clear_screen() {
 
 // Funzione per inizializzare l'interfaccia dello smartwatch
 void init_interface() {
-
-	printf("+-------------------------------+\r\n");
-    printf("|          SMARTWATCH           |\r\n");
-    printf("+-------------------------------+\r\n");
-    printf("| Temp: 0.0 \xB0 C                 |\r\n");
-    printf("|-------------------------------|\r\n");
-    printf("| Heart Rate: 0 bpm             |\r\n");
-    printf("| HR Variability: 0 ms          |\r\n");
-    printf("+-------------------------------+\r\n");
-    printf("| Status: Active                |\r\n");
-    printf("+-------------------------------+\r\n");
-    printf("| Gruppo 1:                     |\r\n");
-    printf("| Carmine Vardaro               |\r\n");
-    printf("| Alessia Parente               |\r\n");
-    printf("| Antonio D'Arienzo             |\r\n");
-    printf("+-------------------------------+\r\n");
+    clear_screen();
+    printf("+-------------------------------+\n");
+    printf("|          SMARTWATCH            |\n");
+    printf("+-------------------------------+\n");
+    printf("| Time: 12:34 PM                 |\n");
+    printf("+-------------------------------+\n");
+    printf("| Temp: 0.0 C                    |\n");
+    printf("|-------------------------------|\n");
+    printf("| Heart Rate: 0 bpm              |\n");
+    printf("|-------------------------------|\n");
+    printf("| Steps: 0 steps                 |\n");
+    printf("| Progress: -------------------- |\n");
+    printf("+-------------------------------+\n");
+    printf("| Battery: 85%% | Status: Active  |\n");
+    printf("+-------------------------------+\n");
+    printf("| Gruppo 1:                     |\n");
+    printf("| Carmine Vardaro               |\n");
+    printf("| Alessia Parente               |\n");
+    printf("| Antonio D'Arienzo             |\n");
+    printf("+-------------------------------+\n");
 }
 
 // Funzione per aggiornare la temperatura
@@ -39,74 +49,89 @@ void update_temperature(float new_temperature) {
     printf("| Temp: %.1f C                    |\n", new_temperature);
 }
 
-// Funzione per aggiornare il battito cardiaco e la variabilità
-void update_heart_rate_and_variability(int new_heart_rate, int new_hr_variability) {
-    printf("\033[A\033[K");  // Sposta il cursore e cancella la riga precedente
-    printf("| Heart Rate: %d bpm              |\n", new_heart_rate);
-    printf("\033[A\033[K");  // Sposta ancora una riga in alto
-    printf("| HR Variability: %d ms           |\n", new_hr_variability);
-}
-
-// Funzione che aggiorna la progress bar e mostra il messaggio sopra, solo una volta
-void update_progress_bar_with_message(uint8_t progress, const char* message, int* message_displayed) {
-    if (*message_displayed == 0) {
-        // Mostra il messaggio sopra la progress bar solo se non è stato già visualizzato
-        printf("\033[A\033[K");  // Sposta il cursore di una riga in alto e cancella la riga
-        printf("+-------------------------------+\n");
-        printf("| %s           |\n", message);  // Mostra il messaggio
-        printf("+-------------------------------+\n");
-        *message_displayed = 1;  // Imposta la variabile per indicare che il messaggio è stato visualizzato
-    }
-
-    // Mostra la progress bar
-    print_ProgressBar(progress);
-
-    // Se il progresso è al 100%, cancella la progress bar
-    if (progress == 100) {
-        clear_progress_bar();
-    }
-}
-
-// Funzione per gestire la progress bar e il messaggio per la temperatura
-void update_temperature_with_progress(float new_temperature, uint8_t progress) {
+// Funzione per aggiornare il battito cardiaco
+void update_heart_rate(int new_heart_rate) {
     printf("\033[A");  // Sposta il cursore di una riga in alto
     printf("\033[K");  // Cancella la riga corrente
-    update_temperature(new_temperature);  // Aggiorna la temperatura
-
-    // Mostra il messaggio di calcolo della temperatura e la progress bar, se non già visualizzato
-    update_progress_bar_with_message(progress, "Sto calcolando la temperatura", &temp_message_displayed);
+    printf("| Heart Rate: %d bpm              |\n", new_heart_rate);
 }
 
-// Funzione per gestire la progress bar e il messaggio per HR e HRV
-void update_heart_rate_and_variability_with_progress(int new_heart_rate, int new_hr_variability, uint8_t progress) {
-    printf("\033[A\033[K");  // Sposta il cursore e cancella la riga precedente
-    update_heart_rate_and_variability(new_heart_rate, new_hr_variability);  // Aggiorna HR e HRV
-
-    // Mostra il messaggio di calcolo dell'HR e HRV e la progress bar, se non già visualizzato
-    update_progress_bar_with_message(progress, "Sto calcolando il tuo HR, HRV, non muoverti...", &hr_message_displayed);
+// Funzione per aggiornare il numero di passi
+void update_steps(int new_step_count) {
+    printf("\033[A");  // Sposta il cursore di una riga in alto
+    printf("\033[K");  // Cancella la riga corrente
+    printf("| Steps: %d steps                 |\n", new_step_count);
 }
 
-// Funzione per la progress bar
-void print_ProgressBar(uint8_t progress) {
-    printf("\r[");
-    for (int i = 0; i < 20; i++) {
-        printf(i < (progress / 5) ? "#" : "-");
+// Funzione per aggiungere una riga con un calcolo
+void update_calculation(int heart_rate, int step_count) {
+    // Stampa "Calcolo in corso..." solo una volta
+    if (!calculation_started) {
+        printf("| Calcolo in corso...             |\n");
+        calculation_started = 1;  // Imposta la variabile per non ripetere la frase
     }
-    printf("] %d%%", progress);
-    fflush(stdout);
+
+    int result = heart_rate * step_count;  // Esempio di calcolo
+    printf("| Calculation Result: %d          |\n", result);
 }
 
-// Funzione che aggiorna la progress bar e la rimuove quando non è più necessaria
-void update_progress_bar(uint8_t progress) {
-    print_ProgressBar(progress);
+// Funzione per aggiornare lo stato dell'attività
+void update_activity_status(const char *status) {
+    printf("\033[A");  // Sposta il cursore di una riga in alto
+    printf("\033[K");  // Cancella la riga corrente
+    printf("| Status: %s                    |\n", status);
+}
 
-    // Se il progresso è al 100%, cancella la progress bar
-    if (progress == 100) {
-        clear_progress_bar();
+
+/*
+Nel main
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>  // Per sleep
+#include "interface.h"
+
+int main() {
+    // Inizializzazione dell'interfaccia
+    init_interface();
+
+    // Variabili di esempio
+    float temperature = 37.5;  // Temperatura
+    int heart_rate = 75;       // Battito cardiaco
+    int step_count = 850;      // Contatore passi
+
+    // Simulazione dello smartwatch
+    while (1) {
+        // Aggiorna la temperatura
+        temperature += 0.1;
+        update_temperature(temperature);
+
+        // Aggiorna il battito cardiaco
+        heart_rate = (heart_rate + 1) % 120;
+        update_heart_rate(heart_rate);
+
+        // Aggiorna il contatore dei passi
+        step_count += 1;
+        if (step_count > 1000) step_count = 0;  // Reset del contatore dopo 1000 passi
+        update_steps(step_count);
+
+        // Aggiungi una riga con un calcolo (ad esempio: battito * passi)
+        update_calculation(heart_rate, step_count);
+
+        // Cambia lo stato (fermo, camminando, correndo)
+        if (step_count == 0) {
+            update_activity_status("Fermo");
+        } else if (step_count < 500) {
+            update_activity_status("Camminando");
+        } else {
+            update_activity_status("Correndo");
+        }
+
+        // Pausa di 1 secondo
+        sleep(1);
     }
-}
 
-// Funzione per rimuovere la progress bar
-void clear_progress_bar() {
-    printf("\033[A\033[K");  // Sposta il cursore di una riga sopra e cancella la riga
+    return 0;
 }
+ *
+ */
+

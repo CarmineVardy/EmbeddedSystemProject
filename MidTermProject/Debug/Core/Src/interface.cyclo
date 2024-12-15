@@ -1,10 +1,7 @@
-../Core/Src/interface.c:11:6:clear_screen	1
-../Core/Src/interface.c:16:6:init_interface	1
-../Core/Src/interface.c:36:6:update_temperature	1
-../Core/Src/interface.c:43:6:update_heart_rate_and_variability	1
-../Core/Src/interface.c:51:6:update_progress_bar_with_message	3
-../Core/Src/interface.c:71:6:update_temperature_with_progress	1
-../Core/Src/interface.c:81:6:update_heart_rate_and_variability_with_progress	1
-../Core/Src/interface.c:90:6:print_ProgressBar	3
-../Core/Src/interface.c:100:6:update_progress_bar	2
-../Core/Src/interface.c:110:6:clear_progress_bar	1
+../Core/Src/interface.c:17:6:clear_screen	1
+../Core/Src/interface.c:22:6:init_interface	1
+../Core/Src/interface.c:46:6:update_temperature	1
+../Core/Src/interface.c:53:6:update_heart_rate	1
+../Core/Src/interface.c:60:6:update_steps	1
+../Core/Src/interface.c:67:6:update_calculation	2
+../Core/Src/interface.c:79:6:update_activity_status	1

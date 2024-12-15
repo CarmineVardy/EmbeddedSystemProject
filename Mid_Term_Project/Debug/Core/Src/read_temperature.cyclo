@@ -1,5 +1,0 @@
-../Core/Src/read_temperature.c:12:6:init_TemperatureParams	1
-../Core/Src/read_temperature.c:34:8:calculate_Temperature	1
-../Core/Src/read_temperature.c:51:6:read_Temperature	1
-../Core/Src/read_temperature.c:68:6:check_Stability	5
-../Core/Src/read_temperature.c:114:6:reset_TemperatureParams	1

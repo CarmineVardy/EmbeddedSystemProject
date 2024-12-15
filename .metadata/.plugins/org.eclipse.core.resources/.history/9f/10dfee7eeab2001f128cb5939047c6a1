@@ -1,0 +1,15 @@
+/*
+ * read_temperature.h
+ *
+ *  Created on: Dec 5, 2024
+ *      Author: utente
+ */
+
+#ifndef INC_READ_TEMPERATURE_H_
+#define INC_READ_TEMPERATURE_H_
+
+#include "adc.h"
+
+void read_temperature(uint16_t *d_out, float *voltage, float *temp);
+
+#endif /* INC_READ_TEMPERATURE_H_ */
