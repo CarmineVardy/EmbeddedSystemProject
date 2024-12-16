@@ -1,0 +1,135 @@
+/*
+ * read_temperature.c
+ *
+ *  Created on: Dec 14, 2024
+ *      Author: utente
+ */
+
+#include "read_temperature.h"
+#include "interface.h"
+#include "math.h"
+
+void init_TemperatureParams(TempParam *tempParam) {
+
+	// Inizializza la temperatura corrente a 0.0 (assumendo che la lettura non sia ancora avvenuta)
+    tempParam->currentTemperature = 0.0;
+
+    // La temperatura precedente è anch'essa inizialmente 0.0
+    tempParam->previousTemperature = 0.0;
+
+    // La temperatura stabile è inizialmente 0.0
+    tempParam->stableTemperature = 0.0;
+
+    // Inizializza lo stato di stabilità a 0 (non stabile)
+    tempParam->isStable = 0;
+
+    // Conta il numero di campioni stabiliti per rilevare la stabilità
+    tempParam->stabilityCounter = 0;
+
+    // Inizializza la variabile di rilevamento variazioni a 0 (nessuna variazione rilevata)
+    tempParam->variationDetected = 0;
+}
+
+
+double calculate_Temperature(uint16_t d_out) {
+
+	// Calcola la tensione in ingresso a partire dal valore ADC (d_out)
+    // VREF è la tensione di riferimento e LEVELS è il numero di livelli del convertitore ADC
+    double voltage = ((double)d_out) * VREF / LEVELS;
+
+    // Calcola la resistenza in base alla formula del termistore (legge il valore di tensione)
+    // RS è il valore di resistenza noto, e VREF è la tensione di riferimento
+    double resistance = (-RS * (voltage)) / (voltage - VREF);
+
+    // Calcola la temperatura a partire dalla resistenza usando l'equazione di Steinhart-Hart
+    // BETA, R0 e T0 sono parametri specifici del termistore
+    // La formula restituisce la temperatura in gradi Celsius, quindi si sottrae 273.15 per ottenere il risultato in °C
+    return (BETA) / (log(resistance / R0) + BETA / T0) - 273.15;
+}
+
+
+void read_Temperature(TempParam *tempParam, uint16_t d_out) {
+
+    // Calcola la temperatura attuale utilizzando il valore ADC (d_out)
+    // La funzione 'calculate_TemperatureFromVoltage' calcola la temperatura in gradi Celsius
+    tempParam->currentTemperature = calculate_Temperature(d_out);
+
+    // Verifica la stabilità della temperatura corrente rispetto a quella precedente
+    // La funzione 'check_Stability' gestisce il rilevamento di eventuali variazioni di temperatura
+    check_Stability(tempParam);
+
+
+    // Salva la temperatura corrente come temperatura precedente per il prossimo ciclo di lettura
+    // Questo è necessario per il confronto nelle future letture e per la gestione della stabilità
+    tempParam->previousTemperature = tempParam->currentTemperature;
+}
+
+
+void check_Stability(TempParam *tempParam) {
+
+	// Controlla se la differenza tra la temperatura corrente e quella precedente è maggiore della soglia di stabilità
+    // La funzione fabs() restituisce il valore assoluto della differenza
+    if (fabs(tempParam->currentTemperature - tempParam->previousTemperature) > STABILITY_THRESHOLD) {
+
+        // Se non è stata ancora rilevata una variazione, segnala la variazione e indica che la temperatura non è stabile
+        if (!tempParam->variationDetected) {
+            tempParam->variationDetected = 1;
+            update_temperature_message();
+        }
+
+        // Reset del contatore di stabilità poiché la temperatura è cambiata oltre la soglia
+        tempParam->stabilityCounter = 0;
+        tempParam->isStable = 0;
+    } else {
+        // Se una variazione è stata già rilevata, aumenta il contatore di stabilità
+        if (tempParam->variationDetected) {
+            tempParam->stabilityCounter++;
+
+            // Se il numero di campioni stabili supera la soglia, considera la temperatura stabile
+            if (tempParam->stabilityCounter >= STABILITY_SAMPLES) {
+                // Se la temperatura corrente è significativamente diversa dalla temperatura stabile, aggiorna il valore stabile
+                if (fabs(tempParam->currentTemperature - tempParam->stableTemperature) > STABILITY_THRESHOLD) {
+                    tempParam->stableTemperature = tempParam->currentTemperature;
+                    update_temperature(tempParam->stableTemperature);
+
+                }
+                // Reset del flag di variazione e indica che la temperatura è stabile
+
+
+                clear_temp_interface();
+               tempParam->variationDetected = 0;
+            tempParam->isStable = 1;
+
+            return;
+            }
+
+            uint8_t progress = (tempParam->stabilityCounter * 100) / STABILITY_SAMPLES;
+            update_temperature_progress(progress);
+
+
+
+
+        }
+    }
+}
+
+void reset_TemperatureParams(TempParam *tempParam) {
+
+    // Azzera la temperatura corrente
+    tempParam->currentTemperature = 0.0;
+
+    // Azzera la temperatura precedente
+    tempParam->previousTemperature = 0.0;
+
+    // Azzera la temperatura stabile
+    tempParam->stableTemperature = 0.0;
+
+    // Segna che la temperatura non è stabile (lo stato iniziale)
+    tempParam->isStable = 0;
+
+    // Reset del contatore di stabilità
+    tempParam->stabilityCounter = 0;
+
+    // Reset del flag che rileva variazioni nella temperatura
+    tempParam->variationDetected = 0;
+}

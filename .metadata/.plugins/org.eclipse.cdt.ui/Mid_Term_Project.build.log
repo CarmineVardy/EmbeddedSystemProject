@@ -1,0 +1,17 @@
+11:18:03 **** Incremental Build of configuration Debug for project Mid_Term_Project ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/ECG_module.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/ECG_module.d" -MT"Core/Src/ECG_module.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/ECG_module.o"
+arm-none-eabi-gcc -o "Mid_Term_Project.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\utente\Documents\GitHub\MidTermEmbeddedSystem\Mid_Term_Project\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Mid_Term_Project.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Mid_Term_Project.elf
+ 
+arm-none-eabi-size  Mid_Term_Project.elf 
+arm-none-eabi-objdump -h -S Mid_Term_Project.elf  > "Mid_Term_Project.list"
+   text	   data	    bss	    dec	    hex	filename
+  42392	    488	   2048	  44928	   af80	Mid_Term_Project.elf
+Finished building: default.size.stdout
+ 
+Finished building: Mid_Term_Project.list
+ 
+
+11:18:04 Build Finished. 0 errors, 0 warnings. (took 775ms)
+

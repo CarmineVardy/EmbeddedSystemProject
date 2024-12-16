@@ -1,0 +1,9 @@
+../Core/Src/main.c:98:5:main	10
+../Core/Src/main.c:233:6:SystemClock_Config	3
+../Core/Src/main.c:277:5:_write	1
+../Core/Src/main.c:283:6:handle_step_counter	3
+../Core/Src/main.c:298:6:handle_temperature	2
+../Core/Src/main.c:310:6:handle_temperature_release	1
+../Core/Src/main.c:316:6:handle_ECG	5
+../Core/Src/main.c:359:6:handle_ECG_button_release	1
+../Core/Src/main.c:380:6:Error_Handler	1
