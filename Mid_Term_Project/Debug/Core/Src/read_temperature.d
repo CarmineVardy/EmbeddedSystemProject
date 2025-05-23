@@ -29,7 +29,8 @@ Core/Src/read_temperature.o: ../Core/Src/read_temperature.c \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
- ../Core/Inc/interface.h
+ ../Core/Inc/activity_tracking.h ../Core/Inc/led.h ../Core/Inc/gpio.h \
+ ../Core/Inc/interface.h ../Core/Inc/alarms.h
 ../Core/Inc/read_temperature.h:
 ../Core/Inc/adc.h:
 ../Core/Inc/main.h:
@@ -62,4 +63,8 @@ Core/Src/read_temperature.o: ../Core/Src/read_temperature.c \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h:
+../Core/Inc/activity_tracking.h:
+../Core/Inc/led.h:
+../Core/Inc/gpio.h:
 ../Core/Inc/interface.h:
+../Core/Inc/alarms.h:

@@ -1,7 +1,0 @@
-../Core/Src/interface.c:17:6:clear_screen	1
-../Core/Src/interface.c:22:6:init_interface	1
-../Core/Src/interface.c:46:6:update_temperature	1
-../Core/Src/interface.c:53:6:update_heart_rate	1
-../Core/Src/interface.c:60:6:update_steps	1
-../Core/Src/interface.c:67:6:update_calculation	2
-../Core/Src/interface.c:79:6:update_activity_status	1

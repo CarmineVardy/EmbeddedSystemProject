@@ -1,8 +1,0 @@
-../Core/Src/ECG_module.c:12:6:ECG_init	2
-../Core/Src/ECG_module.c:31:6:filter_signal	2
-../Core/Src/ECG_module.c:53:19:elab_ECG	4
-../Core/Src/ECG_module.c:86:19:find_peaks	7
-../Core/Src/ECG_module.c:116:10:find_max	4
-../Core/Src/ECG_module.c:131:10:find_min	4
-../Core/Src/ECG_module.c:147:6:reset_ECG	3
-../Core/Src/ECG_module.c:167:6:print_ProgressBar2	3

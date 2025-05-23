@@ -1,0 +1,2 @@
+../Core/Src/alarms.c:21:6:checkTemperature_Alarm	16	static
+../Core/Src/alarms.c:43:6:checkECG_Alarm	16	static

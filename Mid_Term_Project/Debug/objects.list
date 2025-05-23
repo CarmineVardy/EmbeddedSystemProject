@@ -1,6 +1,7 @@
 "./Core/Src/ECG_module.o"
 "./Core/Src/activity_tracking.o"
 "./Core/Src/adc.o"
+"./Core/Src/alarms.o"
 "./Core/Src/button.o"
 "./Core/Src/gpio.o"
 "./Core/Src/interface.o"

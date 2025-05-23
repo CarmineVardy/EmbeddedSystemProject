@@ -1,4 +1,0 @@
-../Core/Src/read_temperature.c:12:6:init_TemperatureParams	1
-../Core/Src/read_temperature.c:23:6:read_Temperature	6
-../Core/Src/read_temperature.c:64:6:print_ProgressBar1	3
-../Core/Src/read_temperature.c:73:6:reset_TemperatureParams	1

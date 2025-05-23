@@ -1,7 +1,0 @@
-../Core/Src/ECGmodule.c:13:19:read_ECG	16	static
-../Core/Src/ECGmodule.c:33:10:filter_signal	16	static
-../Core/Src/ECGmodule.c:49:19:filter_init	32	static
-../Core/Src/ECGmodule.c:69:10:find_max	24	static
-../Core/Src/ECGmodule.c:86:10:find_min	24	static
-../Core/Src/ECGmodule.c:103:19:find_peaks	40	static
-../Core/Src/ECGmodule.c:140:19:elab_ECG	240	static

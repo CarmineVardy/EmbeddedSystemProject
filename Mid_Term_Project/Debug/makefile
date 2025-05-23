@@ -1,6 +1,6 @@
 ################################################################################
 # Automatically-generated file. Do not edit!
-# Toolchain: GNU Tools for STM32 (12.3.rel1)
+# Toolchain: GNU Tools for STM32 (13.3.rel1)
 ################################################################################
 
 -include ../makefile.init
@@ -60,8 +60,8 @@ all: main-build
 main-build: Mid_Term_Project.elf secondary-outputs
 
 # Tool invocations
-Mid_Term_Project.elf Mid_Term_Project.map: $(OBJS) $(USER_OBJS) C:\Users\utente\Documents\GitHub\MidTermEmbeddedSystem\Mid_Term_Project\STM32F401RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Mid_Term_Project.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\utente\Documents\GitHub\MidTermEmbeddedSystem\Mid_Term_Project\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Mid_Term_Project.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Mid_Term_Project.elf Mid_Term_Project.map: $(OBJS) $(USER_OBJS) C:\Users\utente\Documents\GitHub\EmbeddedSystemProject\Mid_Term_Project\STM32F401RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "Mid_Term_Project.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\utente\Documents\GitHub\EmbeddedSystemProject\Mid_Term_Project\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Mid_Term_Project.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

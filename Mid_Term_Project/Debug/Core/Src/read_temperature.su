@@ -1,5 +1,5 @@
-../Core/Src/read_temperature.c:12:6:init_TemperatureParams	16	static
-../Core/Src/read_temperature.c:34:8:calculate_Temperature	40	static
-../Core/Src/read_temperature.c:51:6:read_Temperature	16	static
-../Core/Src/read_temperature.c:68:6:check_Stability	32	static
-../Core/Src/read_temperature.c:113:6:reset_TemperatureParams	16	static
+../Core/Src/read_temperature.c:21:6:init_TemperatureParams	16	static
+../Core/Src/read_temperature.c:44:8:calculate_Temperature	40	static
+../Core/Src/read_temperature.c:62:6:read_Temperature	16	static
+../Core/Src/read_temperature.c:78:6:check_Stability	32	static
+../Core/Src/read_temperature.c:124:6:reset_TemperatureParams	16	static
