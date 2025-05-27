@@ -1,0 +1,26 @@
+/*
+ * sen15219.c
+ *
+ *  Created on: May 26, 2025
+ *      Author: utente
+ */
+
+#include "sen15219.h"
+
+void SparkFun_Bio_Sensor_Hub_init(SparkFun_Bio_Sensor_Hub* hub, int resetPin, int mfioPin) {
+
+	 	hub->resetPin = resetPin;
+	    hub->mfioPin = mfioPin;
+
+
+	    if (resetPin >= 0) {
+	        pinMode(resetPin, OUTPUT);
+	    }
+
+	    if (mfioPin >= 0) {
+	        pinMode(mfioPin, OUTPUT);
+	    }
+
+	    hub->address = DEFAULT_ADDRESS;
+}
+

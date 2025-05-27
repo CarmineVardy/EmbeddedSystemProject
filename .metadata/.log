@@ -120,3 +120,24 @@ Command-line arguments:  -os win32 -ws win32 -arch x86_64 -data file:/C:/Users/u
 
 !ENTRY org.eclipse.help.base 2 0 2025-05-26 17:26:11.426
 !MESSAGE Unable to consume Lucene index from bundle 'org.eclipse.cdt.doc.user_11.6.1.202406241230 [617]'. The index should be rebuilt with Lucene 9.11.1
+!SESSION 2025-05-26 17:53:21.591 -----------------------------------------------
+eclipse.buildId=Version 1.18.1
+java.version=21.0.3
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=it_IT
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2025-05-26 17:53:32.787
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2025-05-26 17:53:32.787
+!MESSAGE Log4j2 initialized with config file C:\Users\utente\Documents\GitHub\EmbeddedSystemProject\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2025-05-26 17:53:37.275
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-05-26 17:55:05.245
+!MESSAGE Indexed 'SEN-15219' (19 sources, 81 headers) in 2.52 sec: 4,289 declarations; 18,181 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0089%)
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.launch 2 0 2025-05-26 20:55:40.460
+!MESSAGE Won't launch debug session since we failed to locate the binary.

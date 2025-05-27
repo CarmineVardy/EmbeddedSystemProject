@@ -1,0 +1,178 @@
+/*
+ * sen15219.c
+ *
+ *  Created on: May 26, 2025
+ *      Author: utente
+ */
+
+#include "sen15219.h"
+
+void SparkFun_Bio_Sensor_Hub_init(SparkFun_Bio_Sensor_Hub* hub, int resetPin, int mfioPin) {
+
+	 	hub->resetPin = resetPin;
+	    hub->mfioPin = mfioPin;
+
+
+	    if (resetPin >= 0) {
+	        pinMode(resetPin, OUTPUT);
+	    }
+
+	    if (mfioPin >= 0) {
+	        pinMode(mfioPin, OUTPUT);
+	    }
+
+	    hub->address = DEFAULT_ADDRESS;
+}
+
+
+void init(){
+
+	Wire.begin();
+	  int result = bioHub.begin();
+	  if (result == 0) // Zero errors!
+	    Serial.println("Sensor started!");
+
+	  Serial.println("Configuring Sensor....");
+	  int error = bioHub.configSensorBpm(MODE_ONE); // Configure Sensor and BPM mode , MODE_TWO also available
+	  if (error == 0){// Zero errors.
+	    Serial.println("Sensor configured.");
+	  }
+	  else {
+	    Serial.println("Error configuring sensor.");
+	    Serial.print("Error: ");
+	    Serial.println(error);
+	  }
+
+	  // Set pulse width.
+	  error = bioHub.setPulseWidth(width);
+	  if (error == 0){// Zero errors.
+	    Serial.println("Pulse Width Set.");
+	  }
+	  else {
+	    Serial.println("Could not set Pulse Width.");
+	    Serial.print("Error: ");
+	    Serial.println(error);
+	  }
+
+	  // Check that the pulse width was set.
+	  pulseWidthVal = bioHub.readPulseWidth();
+	  Serial.print("Pulse Width: ");
+	  Serial.println(pulseWidthVal);
+
+	  // Set sample rate per second. Remember that not every sample rate is
+	  // available with every pulse width. Check hookup guide for more information.
+	  error = bioHub.setSampleRate(samples);
+	  if (error == 0){// Zero errors.
+	    Serial.println("Sample Rate Set.");
+	  }
+	  else {
+	    Serial.println("Could not set Sample Rate!");
+	    Serial.print("Error: ");
+	    Serial.println(error);
+	  }
+
+	  // Check sample rate.
+	  sampleVal = bioHub.readSampleRate();
+	  Serial.print("Sample rate is set to: ");
+	  Serial.println(sampleVal);
+
+	  // Data lags a bit behind the sensor, if you're finger is on the sensor when
+	  // it's being configured this delay will give some time for the data to catch
+	  // up.
+	  Serial.println("Loading up the buffer with data....");
+	  delay(4000);
+
+}
+
+
+
+
+costruttore{
+	SparkFun_Bio_Sensor_Hub::SparkFun_Bio_Sensor_Hub(int resetPin, int mfioPin, uint8_t address)
+	{
+
+	    _resetPin = resetPin;
+	    if (resetPin >= 0)
+	        pinMode(_resetPin, OUTPUT); // Set the pin as output
+
+	    _mfioPin = mfioPin;
+	    if (mfioPin >= 0)
+	        pinMode(_mfioPin, OUTPUT); // Set the pin as output
+
+	    _address = address;
+	}
+}
+
+uint8_t SparkFun_Bio_Sensor_Hub::readFillArray(uint8_t _familyByte, uint8_t _indexByte, uint8_t _numOfReads,
+                                               uint8_t array[])
+{
+
+    uint8_t statusByte;
+
+    _i2cPort->beginTransmission(_address);
+    _i2cPort->write(_familyByte);
+    _i2cPort->write(_indexByte);
+    _i2cPort->endTransmission();
+    delay(CMD_DELAY);
+
+    _i2cPort->requestFrom(_address, static_cast<uint8_t>(_numOfReads + sizeof(statusByte)));
+    statusByte = _i2cPort->read();
+    if (statusByte)
+    { // SFE_BIO_SUCCESS: 0x00
+        for (size_t i = 0; i < _numOfReads; i++)
+        {
+            array[i] = 0;
+        }
+        return statusByte;
+    }
+
+    for (size_t i = 0; i < _numOfReads; i++)
+    {
+        array[i] = _i2cPort->read();
+    }
+    return statusByte;
+}
+
+
+
+bioData readSensorBpm(){
+
+	//MODE_ONE
+	bioData data;
+
+	readFillArray(READ_DATA_OUTPUT, READ_DATA, MAXFAST_ARRAY_SIZE + MAX30101_LED_ARRAY, bpmSenArr);
+
+	// Value of LED one....
+	libLedBpm.irLed = uint32_t(bpmSenArr[0]) << 16;
+	libLedBpm.irLed |= uint32_t(bpmSenArr[1]) << 8;
+	libLedBpm.irLed |= bpmSenArr[2];
+
+	// Value of LED two...
+	libLedBpm.redLed = uint32_t(bpmSenArr[3]) << 16;
+	libLedBpm.redLed |= uint32_t(bpmSenArr[4]) << 8;
+	libLedBpm.redLed |= bpmSenArr[5];
+
+	// -- What happened here? -- There are two uint32_t values that are given by
+	// the sensor for LEDs that do not exists on the MAX30101. So we have to
+	// request those empty values because they occupy the buffer:
+	// bpmSenArr[6-11].
+
+	// Heart rate formatting
+	libLedBpm.heartRate = (uint16_t(bpmSenArr[12]) << 8);
+	libLedBpm.heartRate |= (bpmSenArr[13]);
+	libLedBpm.heartRate /= 10;
+
+	// Confidence formatting
+	libLedBpm.confidence = bpmSenArr[14];
+
+	// Blood oxygen level formatting
+	libLedBpm.oxygen = uint16_t(bpmSenArr[15]) << 8;
+	libLedBpm.oxygen |= bpmSenArr[16];
+	libLedBpm.oxygen /= 10;
+
+	//"Machine State" - has a finger been detected?
+	libLedBpm.status = bpmSenArr[17];
+
+	return data;
+
+}

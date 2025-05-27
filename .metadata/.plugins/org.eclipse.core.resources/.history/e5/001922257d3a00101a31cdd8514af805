@@ -1,0 +1,34 @@
+/*
+ * sen15219.c
+ *
+ *  Created on: May 26, 2025
+ *      Author: utente
+ */
+
+#include "sen15219.h"
+
+void SparkFun_Bio_Sensor_Hub_init(SparkFun_Bio_Sensor_Hub* hub, int resetPin, int mfioPin) {
+
+	 	hub->resetPin = resetPin;
+	    hub->mfioPin = mfioPin;
+
+
+	    if (resetPin >= 0) {
+	        pinMode(resetPin, OUTPUT);
+	    }
+
+	    if (mfioPin >= 0) {
+	        pinMode(mfioPin, OUTPUT);
+	    }
+
+	    hub->address = DEFAULT_ADDRESS;
+}
+
+int SparkFun_Bio_Sensor_Hub_begin(SparkFun_Bio_Sensor_Hub* hub);
+int SparkFun_Bio_Sensor_Hub_configSensorBpm(SparkFun_Bio_Sensor_Hub* hub, uint8_t mode);
+int SparkFun_Bio_Sensor_Hub_setPulseWidth(SparkFun_Bio_Sensor_Hub* hub, int width);
+int SparkFun_Bio_Sensor_Hub_readPulseWidth(SparkFun_Bio_Sensor_Hub* hub);
+int SparkFun_Bio_Sensor_Hub_setSampleRate(SparkFun_Bio_Sensor_Hub* hub, int samples);
+int SparkFun_Bio_Sensor_Hub_readSampleRate(SparkFun_Bio_Sensor_Hub* hub);
+bioData SparkFun_Bio_Sensor_Hub_readSensorBpm(SparkFun_Bio_Sensor_Hub* hub);
+
